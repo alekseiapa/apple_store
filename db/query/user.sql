@@ -22,33 +22,13 @@ LIMIT $1
 OFFSET $2;
 
 
--- name: UpdateUserFirstName :one
+-- name: UpdateUser :one
 UPDATE "User"
-  set "FirstName" = $2
-WHERE "Uuid" = $1
-RETURNING *;
-
--- name: UpdateUserMiddleName :one
-UPDATE "User"
-  set "MiddleName" = $2
-WHERE "Uuid" = $1
-RETURNING *;
-
--- name: UpdateUserLastName :one
-UPDATE "User"
-  set "LastName" = $2
-WHERE "Uuid" = $1
-RETURNING *;
-
--- name: UpdateUserGender :one
-UPDATE "User"
-  set "Gender" = $2
-WHERE "Uuid" = $1
-RETURNING *;
-
--- name: UpdateUserAge :one
-UPDATE "User"
-  set "Age" = $2
+  set "FirstName" = $2,
+      "MiddleName" = $3,
+      "LastName" = $4,
+      "Gender" = $5,
+      "Age" = $6
 WHERE "Uuid" = $1
 RETURNING *;
 

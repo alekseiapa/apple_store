@@ -4,9 +4,7 @@
 
 package db
 
-import (
-	"database/sql"
-)
+import ()
 
 type Order struct {
 	Uuid int64 `json:"Uuid"`
@@ -25,13 +23,13 @@ type Product struct {
 }
 
 type User struct {
-	Uuid       int64          `json:"Uuid"`
-	FirstName  string         `json:"FirstName"`
-	MiddleName string         `json:"MiddleName"`
-	LastName   string         `json:"LastName"`
-	FullName   sql.NullString `json:"FullName"`
-	Gender     string         `json:"Gender"`
-	Age        int16          `json:"Age"`
+	Uuid       int64  `json:"Uuid"`
+	FirstName  string `json:"FirstName"`
+	MiddleName string `json:"MiddleName"`
+	LastName   string `json:"LastName"`
+	FullName   string `json:"FullName"`
+	Gender     string `json:"Gender"`
+	Age        int16  `json:"Age"`
 }
 
 type UserToUser struct {

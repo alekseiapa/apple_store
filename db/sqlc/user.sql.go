@@ -124,128 +124,35 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 	return items, nil
 }
 
-const updateUserAge = `-- name: UpdateUserAge :one
+const updateUser = `-- name: UpdateUser :one
 UPDATE "User"
-  set "Age" = $2
+  set "FirstName" = $2,
+      "MiddleName" = $3,
+      "LastName" = $4,
+      "Gender" = $5,
+      "Age" = $6
 WHERE "Uuid" = $1
 RETURNING "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age"
 `
 
-type UpdateUserAgeParams struct {
-	Uuid int64 `json:"Uuid"`
-	Age  int16 `json:"Age"`
-}
-
-func (q *Queries) UpdateUserAge(ctx context.Context, arg UpdateUserAgeParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUserAge, arg.Uuid, arg.Age)
-	var i User
-	err := row.Scan(
-		&i.Uuid,
-		&i.FirstName,
-		&i.MiddleName,
-		&i.LastName,
-		&i.FullName,
-		&i.Gender,
-		&i.Age,
-	)
-	return i, err
-}
-
-const updateUserFirstName = `-- name: UpdateUserFirstName :one
-UPDATE "User"
-  set "FirstName" = $2
-WHERE "Uuid" = $1
-RETURNING "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age"
-`
-
-type UpdateUserFirstNameParams struct {
-	Uuid      int64  `json:"Uuid"`
-	FirstName string `json:"FirstName"`
-}
-
-func (q *Queries) UpdateUserFirstName(ctx context.Context, arg UpdateUserFirstNameParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUserFirstName, arg.Uuid, arg.FirstName)
-	var i User
-	err := row.Scan(
-		&i.Uuid,
-		&i.FirstName,
-		&i.MiddleName,
-		&i.LastName,
-		&i.FullName,
-		&i.Gender,
-		&i.Age,
-	)
-	return i, err
-}
-
-const updateUserGender = `-- name: UpdateUserGender :one
-UPDATE "User"
-  set "Gender" = $2
-WHERE "Uuid" = $1
-RETURNING "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age"
-`
-
-type UpdateUserGenderParams struct {
-	Uuid   int64  `json:"Uuid"`
-	Gender string `json:"Gender"`
-}
-
-func (q *Queries) UpdateUserGender(ctx context.Context, arg UpdateUserGenderParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUserGender, arg.Uuid, arg.Gender)
-	var i User
-	err := row.Scan(
-		&i.Uuid,
-		&i.FirstName,
-		&i.MiddleName,
-		&i.LastName,
-		&i.FullName,
-		&i.Gender,
-		&i.Age,
-	)
-	return i, err
-}
-
-const updateUserLastName = `-- name: UpdateUserLastName :one
-UPDATE "User"
-  set "LastName" = $2
-WHERE "Uuid" = $1
-RETURNING "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age"
-`
-
-type UpdateUserLastNameParams struct {
-	Uuid     int64  `json:"Uuid"`
-	LastName string `json:"LastName"`
-}
-
-func (q *Queries) UpdateUserLastName(ctx context.Context, arg UpdateUserLastNameParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUserLastName, arg.Uuid, arg.LastName)
-	var i User
-	err := row.Scan(
-		&i.Uuid,
-		&i.FirstName,
-		&i.MiddleName,
-		&i.LastName,
-		&i.FullName,
-		&i.Gender,
-		&i.Age,
-	)
-	return i, err
-}
-
-const updateUserMiddleName = `-- name: UpdateUserMiddleName :one
-UPDATE "User"
-  set "MiddleName" = $2
-WHERE "Uuid" = $1
-RETURNING "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age"
-`
-
-type UpdateUserMiddleNameParams struct {
+type UpdateUserParams struct {
 	Uuid       int64  `json:"Uuid"`
+	FirstName  string `json:"FirstName"`
 	MiddleName string `json:"MiddleName"`
+	LastName   string `json:"LastName"`
+	Gender     string `json:"Gender"`
+	Age        int16  `json:"Age"`
 }
 
-func (q *Queries) UpdateUserMiddleName(ctx context.Context, arg UpdateUserMiddleNameParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUserMiddleName, arg.Uuid, arg.MiddleName)
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateUser,
+		arg.Uuid,
+		arg.FirstName,
+		arg.MiddleName,
+		arg.LastName,
+		arg.Gender,
+		arg.Age,
+	)
 	var i User
 	err := row.Scan(
 		&i.Uuid,

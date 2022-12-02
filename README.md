@@ -30,3 +30,4 @@ What I am using:
 - TablePlus as DB UI https://tableplus.com/download
 - Golang-migrate for DB migrations: https://github.com/golang-migrate/migrate
 - SQLC for DB interaction https://docs.sqlc.dev/en/latest
+- Testify for testing https://github.com/stretchr/testify

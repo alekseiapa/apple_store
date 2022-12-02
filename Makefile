@@ -16,7 +16,10 @@ migratedown:
 .PHONY: database
 
 sqlc:
-	sqlc generate 
+	sqlc generate
+
+test:
+	go test -v -cover ./...
 
 # phony targets
 database : postgres createdb dropdb migrateup migratedown sqlc
