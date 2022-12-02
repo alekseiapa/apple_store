@@ -3,7 +3,7 @@ CREATE TABLE "User" (
   "FirstName" varchar(256) NOT NULL,
   "MiddleName" varchar(256) DEFAULT '',
   "LastName" varchar(256) NOT NULL,
-  "FullName" varchar NOT NULL,
+  "FullName" varchar GENERATED ALWAYS AS ("FirstName" || "MiddleName" || "LastName") STORED,
   "Sex" varchar(1),
   "Age" smallint
 );
