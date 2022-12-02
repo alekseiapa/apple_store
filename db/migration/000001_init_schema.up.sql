@@ -1,11 +1,11 @@
 CREATE TABLE "User" (
   "Uuid" bigserial PRIMARY KEY,
   "FirstName" varchar(256) NOT NULL,
-  "MiddleName" varchar(256) DEFAULT '',
+  "MiddleName" varchar(256) NOT NULL,
   "LastName" varchar(256) NOT NULL,
-  "FullName" varchar GENERATED ALWAYS AS ("FirstName" || "MiddleName" || "LastName") STORED,
-  "Sex" varchar(1),
-  "Age" smallint
+  "FullName" varchar GENERATED ALWAYS AS ("LastName" || ' ' || "FirstName" || ' ' || "MiddleName") STORED,
+  "Gender" varchar(1) NOT NULL,
+  "Age" smallint NOT NULL
 );
 
 CREATE TABLE "Order" (

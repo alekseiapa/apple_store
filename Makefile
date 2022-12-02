@@ -15,5 +15,8 @@ migratedown:
 
 .PHONY: database
 
+sqlc:
+	sqlc generate 
+
 # phony targets
-database : postgres createdb dropdb migrateup migratedown
+database : postgres createdb dropdb migrateup migratedown sqlc
