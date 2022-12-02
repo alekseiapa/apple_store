@@ -5,7 +5,8 @@ CREATE TABLE "User" (
   "LastName" varchar(256) NOT NULL,
   "FullName" varchar NOT NULL GENERATED ALWAYS AS ("LastName" || ' ' || "FirstName" || ' ' || "MiddleName") STORED,
   "Gender" varchar(1) NOT NULL,
-  "Age" smallint NOT NULL
+  "Age" smallint NOT NULL,
+  "Balance" bigint NOT NULL DEFAULT 0
 );
 
 CREATE TABLE "Order" (

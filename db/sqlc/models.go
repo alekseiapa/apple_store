@@ -30,6 +30,7 @@ type User struct {
 	FullName   string `json:"FullName"`
 	Gender     string `json:"Gender"`
 	Age        int16  `json:"Age"`
+	Balance    int64  `json:"Balance"`
 }
 
 type UserToUser struct {
