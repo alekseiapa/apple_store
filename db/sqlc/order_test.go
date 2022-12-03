@@ -55,7 +55,7 @@ func TestDeleteOrder(t *testing.T) {
 	err := testQueries.DeleteOrder(context.Background(), order1.Uuid)
 	require.NoError(t, err)
 
-	order2, err := testQueries.GetUser(context.Background(), order1.Uuid)
+	order2, err := testQueries.GetOrder(context.Background(), order1.Uuid)
 	require.Error(t, err)
 	require.EqualError(t, err, sql.ErrNoRows.Error())
 	require.Empty(t, order2)

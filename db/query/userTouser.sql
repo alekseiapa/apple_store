@@ -22,13 +22,7 @@ OFFSET $2;
 
 -- name: UpdateUserToUser :one
 UPDATE "UserToUser"
-  set "FirstUserUuid" = $3,
-      "SecondUserUuid" = $4
+  set "SecondUserUuid" = $3
 WHERE "FirstUserUuid" = $1 
     AND "SecondUserUuid" = $2
 RETURNING *;
-
--- name: DeleteUserToUser :exec
-DELETE FROM "UserToUser"
-WHERE "FirstUserUuid" = $1 
-    AND "SecondUserUuid" = $2;

@@ -32,22 +32,6 @@ func (q *Queries) CreateUserToUser(ctx context.Context, arg CreateUserToUserPara
 	return i, err
 }
 
-const deleteUserToUser = `-- name: DeleteUserToUser :exec
-DELETE FROM "UserToUser"
-WHERE "FirstUserUuid" = $1 
-    AND "SecondUserUuid" = $2
-`
-
-type DeleteUserToUserParams struct {
-	FirstUserUuid  int64 `json:"FirstUserUuid"`
-	SecondUserUuid int64 `json:"SecondUserUuid"`
-}
-
-func (q *Queries) DeleteUserToUser(ctx context.Context, arg DeleteUserToUserParams) error {
-	_, err := q.db.ExecContext(ctx, deleteUserToUser, arg.FirstUserUuid, arg.SecondUserUuid)
-	return err
-}
-
 const getUserToUser = `-- name: GetUserToUser :one
 SELECT "FirstUserUuid", "SecondUserUuid" FROM "UserToUser"
 WHERE "FirstUserUuid" = $1 
@@ -104,8 +88,7 @@ func (q *Queries) ListUserToUser(ctx context.Context, arg ListUserToUserParams) 
 
 const updateUserToUser = `-- name: UpdateUserToUser :one
 UPDATE "UserToUser"
-  set "FirstUserUuid" = $3,
-      "SecondUserUuid" = $4
+  set "SecondUserUuid" = $3
 WHERE "FirstUserUuid" = $1 
     AND "SecondUserUuid" = $2
 RETURNING "FirstUserUuid", "SecondUserUuid"
@@ -114,17 +97,11 @@ RETURNING "FirstUserUuid", "SecondUserUuid"
 type UpdateUserToUserParams struct {
 	FirstUserUuid    int64 `json:"FirstUserUuid"`
 	SecondUserUuid   int64 `json:"SecondUserUuid"`
-	FirstUserUuid_2  int64 `json:"FirstUserUuid_2"`
 	SecondUserUuid_2 int64 `json:"SecondUserUuid_2"`
 }
 
 func (q *Queries) UpdateUserToUser(ctx context.Context, arg UpdateUserToUserParams) (UserToUser, error) {
-	row := q.db.QueryRowContext(ctx, updateUserToUser,
-		arg.FirstUserUuid,
-		arg.SecondUserUuid,
-		arg.FirstUserUuid_2,
-		arg.SecondUserUuid_2,
-	)
+	row := q.db.QueryRowContext(ctx, updateUserToUser, arg.FirstUserUuid, arg.SecondUserUuid, arg.SecondUserUuid_2)
 	var i UserToUser
 	err := row.Scan(&i.FirstUserUuid, &i.SecondUserUuid)
 	return i, err

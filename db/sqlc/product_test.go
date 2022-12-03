@@ -69,7 +69,7 @@ func TestDeleteProduct(t *testing.T) {
 	err := testQueries.DeleteProduct(context.Background(), product1.Uuid)
 	require.NoError(t, err)
 
-	product2, err := testQueries.GetUser(context.Background(), product1.Uuid)
+	product2, err := testQueries.GetProduct(context.Background(), product1.Uuid)
 	require.Error(t, err)
 	require.EqualError(t, err, sql.ErrNoRows.Error())
 	require.Empty(t, product2)
