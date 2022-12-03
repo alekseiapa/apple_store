@@ -27,7 +27,7 @@ CREATE TABLE "OrderProduct" (
 );
 
 CREATE TABLE "UserToUser" (
-  "FirstUserUuid" bigint NOT NULL,
+  "FirstUserUuid" bigint NOT NULL ,
   "SecondUserUuid" bigint NOT NULL
 );
 
@@ -37,10 +37,10 @@ CREATE INDEX ON "Product" ("Description");
 
 CREATE INDEX ON "Order" ("UserUuid");
 
-ALTER TABLE "OrderProduct" ADD FOREIGN KEY ("OrderUuid") REFERENCES "Order" ("Uuid");
+ALTER TABLE "OrderProduct" ADD FOREIGN KEY ("OrderUuid") REFERENCES "Order" ("Uuid") ON DELETE CASCADE;
 
-ALTER TABLE "OrderProduct" ADD FOREIGN KEY ("ProductUuid") REFERENCES "Product" ("Uuid");
+ALTER TABLE "OrderProduct" ADD FOREIGN KEY ("ProductUuid") REFERENCES "Product" ("Uuid") ON DELETE CASCADE;
 
-ALTER TABLE "UserToUser" ADD FOREIGN KEY ("FirstUserUuid") REFERENCES "User" ("Uuid");
+ALTER TABLE "UserToUser" ADD FOREIGN KEY ("FirstUserUuid") REFERENCES "User" ("Uuid") ON DELETE CASCADE;
 
-ALTER TABLE "UserToUser" ADD FOREIGN KEY ("SecondUserUuid") REFERENCES "User" ("Uuid");
+ALTER TABLE "UserToUser" ADD FOREIGN KEY ("SecondUserUuid") REFERENCES "User" ("Uuid") ON DELETE CASCADE;

@@ -22,13 +22,7 @@ OFFSET $2;
 
 -- name: UpdateOrderProduct :one
 UPDATE "OrderProduct"
-  set "OrderUuid" = $3,
-      "ProductUuid" = $4
+  set "ProductUuid" = $3
 WHERE "OrderUuid" = $1 
     AND "ProductUuid" = $2
 RETURNING *;
-
--- name: DeleteOrderProduct :exec
-DELETE FROM "OrderProduct"
-WHERE "OrderUuid" = $1 
-    AND "ProductUuid" = $2;

@@ -32,22 +32,6 @@ func (q *Queries) CreateOrderProduct(ctx context.Context, arg CreateOrderProduct
 	return i, err
 }
 
-const deleteOrderProduct = `-- name: DeleteOrderProduct :exec
-DELETE FROM "OrderProduct"
-WHERE "OrderUuid" = $1 
-    AND "ProductUuid" = $2
-`
-
-type DeleteOrderProductParams struct {
-	OrderUuid   int64 `json:"OrderUuid"`
-	ProductUuid int64 `json:"ProductUuid"`
-}
-
-func (q *Queries) DeleteOrderProduct(ctx context.Context, arg DeleteOrderProductParams) error {
-	_, err := q.db.ExecContext(ctx, deleteOrderProduct, arg.OrderUuid, arg.ProductUuid)
-	return err
-}
-
 const getOrderProduct = `-- name: GetOrderProduct :one
 SELECT "OrderUuid", "ProductUuid" FROM "OrderProduct"
 WHERE "OrderUuid" = $1 
@@ -104,8 +88,7 @@ func (q *Queries) ListOrderProducts(ctx context.Context, arg ListOrderProductsPa
 
 const updateOrderProduct = `-- name: UpdateOrderProduct :one
 UPDATE "OrderProduct"
-  set "OrderUuid" = $3,
-      "ProductUuid" = $4
+  set "ProductUuid" = $3
 WHERE "OrderUuid" = $1 
     AND "ProductUuid" = $2
 RETURNING "OrderUuid", "ProductUuid"
@@ -114,17 +97,11 @@ RETURNING "OrderUuid", "ProductUuid"
 type UpdateOrderProductParams struct {
 	OrderUuid     int64 `json:"OrderUuid"`
 	ProductUuid   int64 `json:"ProductUuid"`
-	OrderUuid_2   int64 `json:"OrderUuid_2"`
 	ProductUuid_2 int64 `json:"ProductUuid_2"`
 }
 
 func (q *Queries) UpdateOrderProduct(ctx context.Context, arg UpdateOrderProductParams) (OrderProduct, error) {
-	row := q.db.QueryRowContext(ctx, updateOrderProduct,
-		arg.OrderUuid,
-		arg.ProductUuid,
-		arg.OrderUuid_2,
-		arg.ProductUuid_2,
-	)
+	row := q.db.QueryRowContext(ctx, updateOrderProduct, arg.OrderUuid, arg.ProductUuid, arg.ProductUuid_2)
 	var i OrderProduct
 	err := row.Scan(&i.OrderUuid, &i.ProductUuid)
 	return i, err

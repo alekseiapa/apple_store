@@ -74,3 +74,12 @@ func RandomProductInStock() int32 {
 func RandomOrderUseruuid() int64 {
 	return int64(RandomInt(1, 20))
 }
+
+// OrderProduct Table
+func RandomOrderUuid() int64 {
+	return int64(RandomInt(1, 20))
+}
+
+func RandomProductUuid() int64 {
+	return int64(RandomInt(1, 20))
+}
