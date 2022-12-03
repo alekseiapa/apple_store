@@ -10,7 +10,8 @@ CREATE TABLE "User" (
 );
 
 CREATE TABLE "Order" (
-  "Uuid" bigserial PRIMARY KEY
+  "Uuid" bigserial PRIMARY KEY,
+  "UserUuid" bigint NOT NULL
 );
 
 CREATE TABLE "Product" (
@@ -34,6 +35,8 @@ CREATE INDEX ON "User" ("FullName");
 
 CREATE INDEX ON "Product" ("Description");
 
+CREATE INDEX ON "Order" ("UserUuid");
+
 ALTER TABLE "OrderProduct" ADD FOREIGN KEY ("OrderUuid") REFERENCES "Order" ("Uuid");
 
 ALTER TABLE "OrderProduct" ADD FOREIGN KEY ("ProductUuid") REFERENCES "Product" ("Uuid");
@@ -41,5 +44,3 @@ ALTER TABLE "OrderProduct" ADD FOREIGN KEY ("ProductUuid") REFERENCES "Product" 
 ALTER TABLE "UserToUser" ADD FOREIGN KEY ("FirstUserUuid") REFERENCES "User" ("Uuid");
 
 ALTER TABLE "UserToUser" ADD FOREIGN KEY ("SecondUserUuid") REFERENCES "User" ("Uuid");
-
-ALTER TABLE "Order" ADD FOREIGN KEY ("Uuid") REFERENCES "User" ("Uuid");

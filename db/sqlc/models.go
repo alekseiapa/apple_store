@@ -7,7 +7,8 @@ package db
 import ()
 
 type Order struct {
-	Uuid int64 `json:"Uuid"`
+	Uuid     int64 `json:"Uuid"`
+	UserUuid int64 `json:"UserUuid"`
 }
 
 type OrderProduct struct {
