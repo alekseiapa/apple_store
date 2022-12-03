@@ -13,7 +13,7 @@ migrateup:
 migratedown:
 	migrate --path db/migration --database "postgresql://root:secret@localhost:5432/apple_store?sslmode=disable" --verbose down
 
-.PHONY: database
+.PHONY: database test
 
 sqlc:
 	sqlc generate
