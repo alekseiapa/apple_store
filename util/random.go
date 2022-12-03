@@ -31,6 +31,7 @@ func RandomString(n int) string {
 
 }
 
+// UserTable
 func RandomUserFirstName() string {
 	return RandomString(6)
 }
@@ -52,4 +53,19 @@ func RandomUserGender() string {
 
 func RandomUserAge() int {
 	return RandomInt(1, 20)
+}
+
+// Product Table
+func RandomProductDescription() string {
+	return RandomString(6)
+}
+
+func RandomProductPrice() int32 {
+	return int32(RandomInt(1, 20))
+
+}
+
+func RandomProductInStock() int32 {
+	return int32(RandomInt(1, 20))
+
 }
