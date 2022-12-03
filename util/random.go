@@ -55,6 +55,10 @@ func RandomUserAge() int {
 	return RandomInt(1, 20)
 }
 
+func RandomUserBalance() int {
+	return RandomInt(200, 1000)
+}
+
 // Product Table
 func RandomProductDescription() string {
 	return RandomString(6)
