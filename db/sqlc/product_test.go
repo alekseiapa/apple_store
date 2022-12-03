@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomProduct(t *testing.T) Product {
+func createRandomProduct(t *testing.T) *Product {
 	arg := CreateProductParams{
 		Description: util.RandomProductDescription(),
 		Price:       util.RandomProductPrice(),
@@ -25,11 +25,30 @@ func createRandomProduct(t *testing.T) Product {
 	require.Equal(t, arg.InStock, product.InStock)
 
 	require.NotZero(t, product.Uuid)
-	return product
+	return &product
+}
+
+func createRandomProductWithPriceAndInStock(t *testing.T, price, inStock int32) *Product {
+	arg := CreateProductParams{
+		Description: util.RandomProductDescription(),
+		Price:       price,
+		InStock:     inStock,
+	}
+	product, err := testQueries.CreateProduct(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, product)
+
+	require.Equal(t, arg.Description, product.Description)
+	require.Equal(t, arg.Price, product.Price)
+	require.Equal(t, arg.InStock, product.InStock)
+
+	require.NotZero(t, product.Uuid)
+	return &product
 }
 
 func TestCreateProduct(t *testing.T) {
 	createRandomProduct(t)
+	createRandomProductWithPriceAndInStock(t, 100, 1)
 }
 
 func TestGetProduct(t *testing.T) {

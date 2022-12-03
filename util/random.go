@@ -65,7 +65,7 @@ func RandomProductDescription() string {
 }
 
 func RandomProductPrice() int32 {
-	return int32(RandomInt(1, 20))
+	return int32(RandomInt(10, 20))
 
 }
 

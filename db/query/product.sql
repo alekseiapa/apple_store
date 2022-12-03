@@ -12,6 +12,12 @@ RETURNING *;
 SELECT * FROM "Product"
 WHERE "Uuid" = $1 LIMIT 1;
 
+
+-- name: GetProductForUpdate :one
+SELECT * FROM "Product"
+WHERE "Uuid" = $1 LIMIT 1
+FOR NO KEY UPDATE;
+
 -- name: ListProducts :many
 SELECT * FROM "Product"
 ORDER BY "Uuid"
@@ -24,6 +30,12 @@ UPDATE "Product"
         "Price" = $3,
         "InStock" = $4
 WHERE "Uuid" = $1
+RETURNING *;
+
+-- name: ReduceProductInStock :one
+UPDATE "Product"
+  set "InStock" = "InStock" - sqlc.arg(amount) 
+WHERE "Uuid" = sqlc.arg(Uuid)
 RETURNING *;
 
 -- name: DeleteProduct :exec

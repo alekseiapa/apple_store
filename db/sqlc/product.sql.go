@@ -65,6 +65,24 @@ func (q *Queries) GetProduct(ctx context.Context, uuid int64) (Product, error) {
 	return i, err
 }
 
+const getProductForUpdate = `-- name: GetProductForUpdate :one
+SELECT "Uuid", "Description", "Price", "InStock" FROM "Product"
+WHERE "Uuid" = $1 LIMIT 1
+FOR NO KEY UPDATE
+`
+
+func (q *Queries) GetProductForUpdate(ctx context.Context, uuid int64) (Product, error) {
+	row := q.db.QueryRowContext(ctx, getProductForUpdate, uuid)
+	var i Product
+	err := row.Scan(
+		&i.Uuid,
+		&i.Description,
+		&i.Price,
+		&i.InStock,
+	)
+	return i, err
+}
+
 const listProducts = `-- name: ListProducts :many
 SELECT "Uuid", "Description", "Price", "InStock" FROM "Product"
 ORDER BY "Uuid"
@@ -103,6 +121,30 @@ func (q *Queries) ListProducts(ctx context.Context, arg ListProductsParams) ([]P
 		return nil, err
 	}
 	return items, nil
+}
+
+const reduceProductInStock = `-- name: ReduceProductInStock :one
+UPDATE "Product"
+  set "InStock" = "InStock" - $1 
+WHERE "Uuid" = $2
+RETURNING "Uuid", "Description", "Price", "InStock"
+`
+
+type ReduceProductInStockParams struct {
+	Amount int32 `json:"amount"`
+	Uuid   int64 `json:"uuid"`
+}
+
+func (q *Queries) ReduceProductInStock(ctx context.Context, arg ReduceProductInStockParams) (Product, error) {
+	row := q.db.QueryRowContext(ctx, reduceProductInStock, arg.Amount, arg.Uuid)
+	var i Product
+	err := row.Scan(
+		&i.Uuid,
+		&i.Description,
+		&i.Price,
+		&i.InStock,
+	)
+	return i, err
 }
 
 const updateProduct = `-- name: UpdateProduct :one

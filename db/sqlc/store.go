@@ -40,8 +40,9 @@ func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
 
 // BuyProductTxParams contains all the necessary parameters to buy a product
 type BuyProductTxParams struct {
-	User    User    `json:"User"`
-	Product Product `json:"Product"`
+	UserUuid    int64 `json:"UserUuid"`
+	ProductUuid int64 `json:"ProductUuid"`
+	Amount      int32 `json:"Amount"`
 }
 
 // BuyProductTxResult is the result after a successful purchase of a product
@@ -62,36 +63,37 @@ func (store *Store) BuyProductTx(ctx context.Context, arg BuyProductTxParams) (B
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
 
-		inStock := arg.Product.InStock - 1
+		product, err := q.GetProductForUpdate(ctx, arg.ProductUuid)
+		if err != nil {
+			return err
+		}
+		inStock := product.InStock - arg.Amount
 		if inStock < 0 {
-			return fmt.Errorf("product uuid: %v - %v is out of stock", arg.Product.Uuid, arg.Product.Description)
+			return fmt.Errorf("sorry you can't buy since there is not enough pcs left. product uuid: %v - %v -> %v pcs left", product.Uuid, product.Description, product.InStock)
 		}
-		userBalance := arg.User.Balance - int64(arg.Product.Price)
+		user, err := q.GetUserForUpdate(ctx, arg.UserUuid)
+		if err != nil {
+			return err
+		}
+		userBalance := user.Balance - int64(product.Price)*int64(arg.Amount)
 		if userBalance < 0 {
-			return fmt.Errorf("sorry, you don't have enough balance to purchase product uuid: %v - %v", arg.Product.Uuid, arg.Product.Description)
+			return fmt.Errorf("sorry, you don't have enough money to purchase %v pcs of product uuid: %v - %v", arg.Amount, product.Uuid, product.Description)
 		}
-		result.Product, err = q.UpdateProduct(ctx, UpdateProductParams{
-			Uuid:        arg.Product.Uuid,
-			Description: arg.Product.Description,
-			Price:       arg.Product.Price,
-			InStock:     inStock,
+		result.Product, err = q.ReduceProductInStock(ctx, ReduceProductInStockParams{
+			Amount: arg.Amount,
+			Uuid:   product.Uuid,
 		})
 		if err != nil {
 			return err
 		}
-		result.User, err = q.UpdateUser(ctx, UpdateUserParams{
-			Uuid:       arg.User.Uuid,
-			FirstName:  arg.User.FirstName,
-			MiddleName: arg.User.MiddleName,
-			LastName:   arg.User.LastName,
-			Gender:     arg.User.Gender,
-			Age:        arg.User.Age,
-			Balance:    userBalance,
+		result.User, err = q.ReduceUserBalance(ctx, ReduceUserBalanceParams{
+			Uuid:   user.Uuid,
+			Amount: int64(arg.Amount * product.Price),
 		})
 		if err != nil {
 			return err
 		}
-		result.Order, err = q.CreateOrder(ctx, arg.User.Uuid)
+		result.Order, err = q.CreateOrder(ctx, user.Uuid)
 		if err != nil {
 			return err
 		}

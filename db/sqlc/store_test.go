@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -12,15 +11,13 @@ func TestBuyTx(t *testing.T) {
 
 	store := NewStore(testDB)
 
-	user := createRandomUser(t)
-	user.Balance = 1000
-
-	fmt.Println(">> User balance before:", user.Balance)
+	user := createRandomUserWithBalance(t, 1000)
+	product := createRandomProductWithPriceAndInStock(t, 100, 6)
 
 	// So the best way to make sure that our purchase works well
 	// is to run it with several concurrent go routines.
 	// Let’s say I want to run n = 5 concurrent buy purchases
-	// And each of them will reduce a price of product of 10 from user_1.
+	// And each of them will reduce a price of product of 100 from user.
 	// So I will use a simple for loop with n iterations
 	// And inside the loop,
 	// we use the go keyword to start a new routine.
@@ -29,16 +26,24 @@ func TestBuyTx(t *testing.T) {
 	errs := make(chan error)
 	results := make(chan BuyProductTxResult)
 
+	var (
+		finalBalance  int64
+		finalInStock  int32
+		toBuyPcs      int32
+		totalToBuyPcs int32
+	)
+
 	n := 5
+	toBuyPcs = 1
+	totalToBuyPcs = toBuyPcs * int32(n)
 
 	// run n concurrent purchases
 	for i := 0; i < n; i++ {
-		product := createRandomProduct(t)
-		product.Price = 100
 		go func() {
 			result, err := store.BuyProductTx(context.Background(), BuyProductTxParams{
-				User:    user,
-				Product: product,
+				UserUuid:    user.Uuid,
+				ProductUuid: product.Uuid,
+				Amount:      toBuyPcs,
 			})
 
 			errs <- err
@@ -72,7 +77,81 @@ func TestBuyTx(t *testing.T) {
 		// check Product
 		productDB := result.Product
 		require.NotEmpty(t, productDB)
+		finalInStock = result.Product.InStock
+		finalBalance = result.User.Balance
 
+	}
+	require.Equal(t, product.InStock-totalToBuyPcs, finalInStock)
+	require.Equal(t, user.Balance-int64(totalToBuyPcs*product.Price), finalBalance)
+
+}
+
+func TestBuyNotEnoughInStockTx(t *testing.T) {
+
+	store := NewStore(testDB)
+
+	user := createRandomUserWithBalance(t, 1000)
+	product := createRandomProductWithPriceAndInStock(t, 100, 1)
+
+	errs := make(chan error)
+
+	var (
+		toBuyPcs int32
+	)
+
+	n := 5
+	toBuyPcs = 5
+
+	// run n concurrent purchases
+	for i := 0; i < n; i++ {
+		go func() {
+			_, err := store.BuyProductTx(context.Background(), BuyProductTxParams{
+				UserUuid:    user.Uuid,
+				ProductUuid: product.Uuid,
+				Amount:      toBuyPcs,
+			})
+			errs <- err
+		}()
+	}
+
+	for i := 0; i < n; i++ {
+		err := <-errs
+		require.ErrorContains(t, err, "sorry you can't buy since there is not enough pcs left")
+	}
+
+}
+
+func TestBuyNotEnoughMoneyTx(t *testing.T) {
+
+	store := NewStore(testDB)
+
+	user := createRandomUserWithBalance(t, 100)
+	product := createRandomProductWithPriceAndInStock(t, 100, 10)
+
+	errs := make(chan error)
+
+	var (
+		toBuyPcs int32
+	)
+
+	n := 5
+	toBuyPcs = 5
+
+	// run n concurrent purchases
+	for i := 0; i < n; i++ {
+		go func() {
+			_, err := store.BuyProductTx(context.Background(), BuyProductTxParams{
+				UserUuid:    user.Uuid,
+				ProductUuid: product.Uuid,
+				Amount:      toBuyPcs,
+			})
+			errs <- err
+		}()
+	}
+
+	for i := 0; i < n; i++ {
+		err := <-errs
+		require.ErrorContains(t, err, "sorry, you don't have enough money to purchase")
 	}
 
 }

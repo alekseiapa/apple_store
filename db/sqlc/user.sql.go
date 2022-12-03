@@ -86,6 +86,29 @@ func (q *Queries) GetUser(ctx context.Context, uuid int64) (User, error) {
 	return i, err
 }
 
+const getUserForUpdate = `-- name: GetUserForUpdate :one
+SELECT "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance" FROM "User"
+WHERE "Uuid" = $1 LIMIT 1
+FOR NO KEY UPDATE
+`
+
+// This will allow us to block transactions till the end of commit
+func (q *Queries) GetUserForUpdate(ctx context.Context, uuid int64) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserForUpdate, uuid)
+	var i User
+	err := row.Scan(
+		&i.Uuid,
+		&i.FirstName,
+		&i.MiddleName,
+		&i.LastName,
+		&i.FullName,
+		&i.Gender,
+		&i.Age,
+		&i.Balance,
+	)
+	return i, err
+}
+
 const listUsers = `-- name: ListUsers :many
 SELECT "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance" FROM "User"
 ORDER BY "FullName"
@@ -128,6 +151,34 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 		return nil, err
 	}
 	return items, nil
+}
+
+const reduceUserBalance = `-- name: ReduceUserBalance :one
+UPDATE "User"
+  set "Balance" = "Balance" - $1 
+WHERE "Uuid" = $2
+RETURNING "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance"
+`
+
+type ReduceUserBalanceParams struct {
+	Amount int64 `json:"amount"`
+	Uuid   int64 `json:"uuid"`
+}
+
+func (q *Queries) ReduceUserBalance(ctx context.Context, arg ReduceUserBalanceParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, reduceUserBalance, arg.Amount, arg.Uuid)
+	var i User
+	err := row.Scan(
+		&i.Uuid,
+		&i.FirstName,
+		&i.MiddleName,
+		&i.LastName,
+		&i.FullName,
+		&i.Gender,
+		&i.Age,
+		&i.Balance,
+	)
+	return i, err
 }
 
 const updateUser = `-- name: UpdateUser :one

@@ -15,6 +15,19 @@ RETURNING *;
 SELECT * FROM "User"
 WHERE "Uuid" = $1 LIMIT 1;
 
+-- This will allow us to block transactions till the end of commit
+-- name: GetUserForUpdate :one
+SELECT * FROM "User"
+WHERE "Uuid" = $1 LIMIT 1
+FOR NO KEY UPDATE;
+
+
+-- name: ReduceUserBalance :one
+UPDATE "User"
+  set "Balance" = "Balance" - sqlc.arg(amount) 
+WHERE "Uuid" = sqlc.arg(Uuid)
+RETURNING *;
+
 
 -- name: ListUsers :many
 SELECT * FROM "User"
