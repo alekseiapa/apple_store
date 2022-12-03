@@ -1,3 +1,15 @@
+# Apple store
+
+## Setup local development
+
+### Install tools
+
+- [Docker desktop](https://www.docker.com/products/docker-desktop) for building, testing, and deploying containerized applications quickly
+- [TablePlus](https://tableplus.com/) as DB UI
+- [Golang](https://golang.org/)
+- [Homebrew](https://brew.sh/)
+- [Migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate) for DB migrations
+
 ### Setup local infrastructure
 
 - Start postgres container:
@@ -23,11 +35,3 @@
   ```bash
   make migratedown
   ```
-
-What I am using:
-
-- Docker for building, testing, and deploying containerized applications quickly https://docs.docker.com
-- TablePlus as DB UI https://tableplus.com/download
-- Golang-migrate for DB migrations: https://github.com/golang-migrate/migrate
-- SQLC for DB interaction https://docs.sqlc.dev/en/latest
-- Testify for testing https://github.com/stretchr/testify
