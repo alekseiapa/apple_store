@@ -18,7 +18,7 @@ func createRandomUser(t *testing.T) User {
 		LastName:   util.RandomUserLastName(),
 		Gender:     util.RandomUserGender(),
 		Age:        int16(util.RandomUserAge()),
-		Balance:    int64(util.RandomUserAge()),
+		Balance:    int64(util.RandomUserBalance()),
 	}
 	user, err := testQueries.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
