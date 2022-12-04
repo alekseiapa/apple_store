@@ -26,6 +26,14 @@ func NewServer(store *db.Store) *Server {
 	router.PUT("/api/products/:id", server.updateProduct)
 	router.DELETE("/api/products/:id", server.deleteProduct)
 
+	router.POST("/api/orders", server.createOrder)
+	router.DELETE("/api/orders/:id", server.deleteOrder)
+
+	// TODO: The following routes should be implemented
+	// router.GET("/api/orders/:id", server.getProduct)
+	// router.GET("/api/orders", server.listProduct)
+	// router.PUT("/api/orders/:id", server.updateProduct)
+
 	server.router = router
 	return server
 }

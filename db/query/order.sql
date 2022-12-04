@@ -24,6 +24,6 @@ UPDATE "Order"
 WHERE "Uuid" = $1
 RETURNING *;
 
--- name: DeleteOrder :exec
+-- name: DeleteOrder :execrows
 DELETE FROM "Order"
 WHERE "Uuid" = $1;

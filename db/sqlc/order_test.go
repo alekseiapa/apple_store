@@ -57,7 +57,7 @@ func TestUpdateOrder(t *testing.T) {
 
 func TestDeleteOrder(t *testing.T) {
 	order1 := createRandomOrder(t)
-	err := testQueries.DeleteOrder(context.Background(), order1.Uuid)
+	_, err := testQueries.DeleteOrder(context.Background(), order1.Uuid)
 	require.NoError(t, err)
 
 	order2, err := testQueries.GetOrder(context.Background(), order1.Uuid)

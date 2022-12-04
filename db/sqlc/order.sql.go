@@ -31,14 +31,17 @@ func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order
 	return i, err
 }
 
-const deleteOrder = `-- name: DeleteOrder :exec
+const deleteOrder = `-- name: DeleteOrder :execrows
 DELETE FROM "Order"
 WHERE "Uuid" = $1
 `
 
-func (q *Queries) DeleteOrder(ctx context.Context, uuid int64) error {
-	_, err := q.db.ExecContext(ctx, deleteOrder, uuid)
-	return err
+func (q *Queries) DeleteOrder(ctx context.Context, uuid int64) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteOrder, uuid)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }
 
 const getOrder = `-- name: GetOrder :one

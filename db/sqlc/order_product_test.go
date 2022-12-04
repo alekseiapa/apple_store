@@ -62,7 +62,7 @@ func TestUpdateOrderProduct(t *testing.T) {
 func TestDeleteOrderProduct(t *testing.T) {
 	orderProduct1 := createRandomOrderProduct(t)
 
-	err := testQueries.DeleteOrder(context.Background(), orderProduct1.OrderUuid)
+	_, err := testQueries.DeleteOrder(context.Background(), orderProduct1.OrderUuid)
 
 	require.NoError(t, err)
 
