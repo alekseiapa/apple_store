@@ -6,22 +6,27 @@ import (
 	"fmt"
 )
 
+type Store interface {
+	Querier
+	BuyProductTx(ctx context.Context, arg BuyProductTxParams) (BuyProductTxResult, error)
+}
+
 // Store provide all functions to execute db queries and transactions
 // In order to make a support of transactions we should use the Composition here
 
-type Store struct {
+type SQLStore struct {
 	*Queries
 	db *sql.DB
 }
 
-func NewStore(db *sql.DB) *Store {
-	return &Store{
+func NewStore(db *sql.DB) Store {
+	return &SQLStore{
 		db:      db,
 		Queries: New(db),
 	}
 }
 
-func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
+func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
 	tx, err := store.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -53,7 +58,7 @@ type BuyProductTxResult struct {
 }
 
 // Creates on Order.Uuid record, updates User's balance, Add a record to OrderProduct Table
-func (store *Store) BuyProductTx(ctx context.Context, arg BuyProductTxParams) (BuyProductTxResult, error) {
+func (store *SQLStore) BuyProductTx(ctx context.Context, arg BuyProductTxParams) (BuyProductTxResult, error) {
 	var result BuyProductTxResult
 
 	// we’re accessing the result variable of the outer function from inside this callback function similar for the arg variable.

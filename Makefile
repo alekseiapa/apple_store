@@ -22,8 +22,11 @@ test:
 server:
 	go run main.go
 
+mock:
+	mockgen --destination db/mock/store.go --package mockdb  github.com/alekseiapa/apple_store/db/sqlc Store
 
-.PHONY: database test api
+
+.PHONY: database test api mock
 
 # phony targets
 database : postgres createdb dropdb migrateup migratedown sqlc
