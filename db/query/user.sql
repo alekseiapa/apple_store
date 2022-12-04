@@ -5,10 +5,9 @@ INSERT INTO "User" (
 	"LastName", 
 	"Gender", 
 	"Age",
-  "Balance",
-  "Currency") 
+  "Balance") 
 VALUES (
-    $1, $2, $3, $4, $5, $6, $7
+    $1, $2, $3, $4, $5, $6
 )
 RETURNING *;
 
@@ -44,8 +43,7 @@ UPDATE "User"
       "LastName" = $4,
       "Gender" = $5,
       "Age" = $6,
-      "Balance" = $7,
-      "Currency" = $8
+      "Balance" = $7
 WHERE "Uuid" = $1
 RETURNING *;
 

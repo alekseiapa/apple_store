@@ -16,14 +16,18 @@ func NewServer(store *db.Store) *Server {
 
 	router.POST("/api/users", server.createUser)
 	router.GET("/api/users/:id", server.getUser)
-	router.GET("'/api/users", server.listUser)
+	router.GET("/api/users", server.listUser)
 	router.PUT("/api/users/:id", server.updateUser)
 	router.DELETE("/api/users/:id", server.deleteUser)
 
+	router.POST("/api/products", server.createProduct)
+	router.GET("/api/products/:id", server.getProduct)
+	router.GET("/api/products", server.listProduct)
+	router.PUT("/api/products/:id", server.updateProduct)
+	router.DELETE("/api/products/:id", server.deleteProduct)
+
 	server.router = router
 	return server
-
-	//
 }
 
 // Start runs the HTTP server on a specific address to start listening the api requests

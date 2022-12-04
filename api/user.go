@@ -10,13 +10,12 @@ import (
 )
 
 type createUserRequest struct {
-	FirstName  string `json:"FirstName" binding:"required"`
-	MiddleName string `json:"MiddleName" binding:"required"`
-	LastName   string `json:"LastName" binding:"required"`
-	Gender     string `json:"Gender" binding:"required,oneof=M F"`
-	Age        int16  `json:"Age" binding:"required"`
-	Currency   string `json:"Currency" binding:"required,oneof=USD EUR RUB"`
-	Balance    int64  `json:"Balance" binding:"required"`
+	FirstName  string  `json:"FirstName" binding:"required"`
+	MiddleName string  `json:"MiddleName" binding:"required"`
+	LastName   string  `json:"LastName" binding:"required"`
+	Gender     string  `json:"Gender" binding:"required,oneof=M F"`
+	Age        int16   `json:"Age" binding:"required"`
+	Balance    float32 `json:"Balance" binding:"required"`
 }
 
 func (server *Server) createUser(ctx *gin.Context) {
@@ -25,7 +24,6 @@ func (server *Server) createUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	// TODO: Balance will be stored as USD in DB but for the User will be displayed according to his needs
 	arg := db.CreateUserParams{
 		FirstName:  req.FirstName,
 		MiddleName: req.MiddleName,
@@ -41,7 +39,7 @@ func (server *Server) createUser(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, user)
+	ctx.JSON(http.StatusCreated, user)
 }
 
 type getUserRequest struct {
@@ -96,13 +94,12 @@ type updateUserRequestUri struct {
 	Uuid int64 `uri:"id" binding:"required,min=1"`
 }
 type updateUserRequestJson struct {
-	FirstName  string `json:"FirstName" binding:"required"`
-	MiddleName string `json:"MiddleName" binding:"required"`
-	LastName   string `json:"LastName" binding:"required"`
-	Gender     string `json:"Gender" binding:"required,oneof=M F"`
-	Age        int16  `json:"Age" binding:"required"`
-	Currency   string `json:"Currency" binding:"required,oneof=USD EUR RUB"`
-	Balance    int64  `json:"Balance" binding:"required"`
+	FirstName  string  `json:"FirstName" binding:"required"`
+	MiddleName string  `json:"MiddleName" binding:"required"`
+	LastName   string  `json:"LastName" binding:"required"`
+	Gender     string  `json:"Gender" binding:"required,oneof=M F"`
+	Age        int16   `json:"Age" binding:"required"`
+	Balance    float32 `json:"Balance" binding:"required"`
 }
 
 func (server *Server) updateUser(ctx *gin.Context) {

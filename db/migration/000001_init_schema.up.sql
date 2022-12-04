@@ -6,8 +6,7 @@ CREATE TABLE "User" (
   "FullName" varchar NOT NULL GENERATED ALWAYS AS ("LastName" || ' ' || "FirstName" || ' ' || "MiddleName") STORED,
   "Gender" varchar(1) NOT NULL,
   "Age" smallint NOT NULL,
-  "Balance" bigint NOT NULL DEFAULT 0,
-  "Currency" varchar(3) NOT NULL
+  "Balance" real NOT NULL DEFAULT 0
 );
 
 CREATE TABLE "Order" (
@@ -19,7 +18,7 @@ CREATE TABLE "Order" (
 CREATE TABLE "Product" (
   "Uuid" bigserial PRIMARY KEY,
   "Description" varchar(256) NOT NULL,
-  "Price" integer NOT NULL,
+  "Price" real NOT NULL,
   "InStock" integer NOT NULL DEFAULT 0
 );
 

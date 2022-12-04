@@ -18,8 +18,7 @@ func createRandomUser(t *testing.T) *User {
 		LastName:   util.RandomUserLastName(),
 		Gender:     util.RandomUserGender(),
 		Age:        int16(util.RandomUserAge()),
-		Balance:    int64(util.RandomUserBalance()),
-		Currency:   util.RandomUserCurrency(),
+		Balance:    util.RandomUserBalance(),
 	}
 	user, err := testQueries.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
@@ -31,13 +30,12 @@ func createRandomUser(t *testing.T) *User {
 	require.Equal(t, arg.Gender, user.Gender)
 	require.Equal(t, arg.Age, user.Age)
 	require.Equal(t, arg.Balance, user.Balance)
-	require.Equal(t, arg.Currency, user.Currency)
 
 	require.NotZero(t, user.Uuid)
 	return &user
 }
 
-func createRandomUserWithBalance(t *testing.T, balance int64) *User {
+func createRandomUserWithBalance(t *testing.T, balance float32) *User {
 	arg := CreateUserParams{
 		FirstName:  util.RandomUserFirstName(),
 		MiddleName: util.RandomUserMiddleName(),
@@ -45,7 +43,6 @@ func createRandomUserWithBalance(t *testing.T, balance int64) *User {
 		Gender:     util.RandomUserGender(),
 		Age:        int16(util.RandomUserAge()),
 		Balance:    balance,
-		Currency:   util.RandomUserCurrency(),
 	}
 	user, err := testQueries.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
@@ -57,7 +54,6 @@ func createRandomUserWithBalance(t *testing.T, balance int64) *User {
 	require.Equal(t, arg.Gender, user.Gender)
 	require.Equal(t, arg.Age, user.Age)
 	require.Equal(t, arg.Balance, user.Balance)
-	require.Equal(t, arg.Currency, user.Currency)
 
 	require.NotZero(t, user.Uuid)
 	return &user
@@ -80,13 +76,12 @@ func TestGetUser(t *testing.T) {
 	require.Equal(t, user1.Gender, user2.Gender)
 	require.Equal(t, user1.Age, user2.Age)
 	require.Equal(t, user1.Balance, user2.Balance)
-	require.Equal(t, user1.Currency, user2.Currency)
 
 }
 
 func TestUpdateUser(t *testing.T) {
 	user1 := createRandomUser(t)
-	balance := int64(util.RandomInt(10, 20))
+	balance := util.RandomFloat(10.00, 20.00)
 	arg := UpdateUserParams{
 		Uuid:       user1.Uuid,
 		FirstName:  util.RandomString(12),
@@ -95,7 +90,6 @@ func TestUpdateUser(t *testing.T) {
 		Gender:     util.RandomString(1),
 		Age:        int16(util.RandomInt(10, 20)),
 		Balance:    balance,
-		Currency:   util.RandomUserCurrency(),
 	}
 	user2, err := testQueries.UpdateUser(context.Background(), arg)
 	require.NoError(t, err)
@@ -108,7 +102,6 @@ func TestUpdateUser(t *testing.T) {
 	require.Equal(t, user2.Balance, balance)
 	require.Equal(t, user2.FullName, fmt.Sprintf("%s %s %s", arg.LastName, arg.FirstName, arg.MiddleName))
 	require.Equal(t, user2.Age, arg.Age)
-	require.Equal(t, user2.Currency, arg.Currency)
 
 }
 

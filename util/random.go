@@ -17,6 +17,11 @@ func RandomInt(min, max int) int {
 	return min + rand.Intn(max-min+1) // min + 0->max-min
 }
 
+// random float between min and max
+func RandomFloat(min, max float32) float32 {
+	return min + rand.Float32()*(max-min) // min + 0->max-min
+}
+
 // random string of n length
 func RandomString(n int) string {
 	var sb strings.Builder
@@ -55,11 +60,8 @@ func RandomUserAge() int {
 	return RandomInt(1, 20)
 }
 
-func RandomUserBalance() int {
-	return RandomInt(200, 1000)
-}
-func RandomUserCurrency() string {
-	return RandomString(3)
+func RandomUserBalance() float32 {
+	return RandomFloat(200.00, 1000.00)
 }
 
 // Product Table
@@ -67,8 +69,8 @@ func RandomProductDescription() string {
 	return RandomString(6)
 }
 
-func RandomProductPrice() int32 {
-	return int32(RandomInt(10, 20))
+func RandomProductPrice() float32 {
+	return RandomFloat(10.00, 20.00)
 
 }
 

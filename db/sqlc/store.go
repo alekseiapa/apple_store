@@ -75,7 +75,7 @@ func (store *Store) BuyProductTx(ctx context.Context, arg BuyProductTxParams) (B
 		if err != nil {
 			return err
 		}
-		userBalance := user.Balance - int64(product.Price)*int64(arg.Quantity)
+		userBalance := user.Balance - product.Price*float32(arg.Quantity)
 		if userBalance < 0 {
 			return fmt.Errorf("sorry, you don't have enough money to purchase %v pcs of product uuid: %v - %v", arg.Quantity, product.Uuid, product.Description)
 		}
@@ -88,7 +88,7 @@ func (store *Store) BuyProductTx(ctx context.Context, arg BuyProductTxParams) (B
 		}
 		result.User, err = q.ReduceUserBalance(ctx, ReduceUserBalanceParams{
 			Uuid:   user.Uuid,
-			Amount: int64(arg.Quantity * product.Price),
+			Amount: float32(arg.Quantity) * product.Price,
 		})
 		if err != nil {
 			return err

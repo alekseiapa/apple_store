@@ -18,22 +18,21 @@ type OrderProduct struct {
 }
 
 type Product struct {
-	Uuid        int64  `json:"Uuid"`
-	Description string `json:"Description"`
-	Price       int32  `json:"Price"`
-	InStock     int32  `json:"InStock"`
+	Uuid        int64   `json:"Uuid"`
+	Description string  `json:"Description"`
+	Price       float32 `json:"Price"`
+	InStock     int32   `json:"InStock"`
 }
 
 type User struct {
-	Uuid       int64  `json:"Uuid"`
-	FirstName  string `json:"FirstName"`
-	MiddleName string `json:"MiddleName"`
-	LastName   string `json:"LastName"`
-	FullName   string `json:"FullName"`
-	Gender     string `json:"Gender"`
-	Age        int16  `json:"Age"`
-	Balance    int64  `json:"Balance"`
-	Currency   string `json:"Currency"`
+	Uuid       int64   `json:"Uuid"`
+	FirstName  string  `json:"FirstName"`
+	MiddleName string  `json:"MiddleName"`
+	LastName   string  `json:"LastName"`
+	FullName   string  `json:"FullName"`
+	Gender     string  `json:"Gender"`
+	Age        int16   `json:"Age"`
+	Balance    float32 `json:"Balance"`
 }
 
 type UserToUser struct {

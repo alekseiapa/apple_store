@@ -21,9 +21,9 @@ RETURNING "Uuid", "Description", "Price", "InStock"
 `
 
 type CreateProductParams struct {
-	Description string `json:"Description"`
-	Price       int32  `json:"Price"`
-	InStock     int32  `json:"InStock"`
+	Description string  `json:"Description"`
+	Price       float32 `json:"Price"`
+	InStock     int32   `json:"InStock"`
 }
 
 func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
@@ -38,14 +38,17 @@ func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (P
 	return i, err
 }
 
-const deleteProduct = `-- name: DeleteProduct :exec
+const deleteProduct = `-- name: DeleteProduct :execrows
 DELETE FROM "Product"
 WHERE "Uuid" = $1
 `
 
-func (q *Queries) DeleteProduct(ctx context.Context, uuid int64) error {
-	_, err := q.db.ExecContext(ctx, deleteProduct, uuid)
-	return err
+func (q *Queries) DeleteProduct(ctx context.Context, uuid int64) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteProduct, uuid)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }
 
 const getProduct = `-- name: GetProduct :one
@@ -157,10 +160,10 @@ RETURNING "Uuid", "Description", "Price", "InStock"
 `
 
 type UpdateProductParams struct {
-	Uuid        int64  `json:"Uuid"`
-	Description string `json:"Description"`
-	Price       int32  `json:"Price"`
-	InStock     int32  `json:"InStock"`
+	Uuid        int64   `json:"Uuid"`
+	Description string  `json:"Description"`
+	Price       float32 `json:"Price"`
+	InStock     int32   `json:"InStock"`
 }
 
 func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error) {

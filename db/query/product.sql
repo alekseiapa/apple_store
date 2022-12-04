@@ -38,6 +38,6 @@ UPDATE "Product"
 WHERE "Uuid" = sqlc.arg(Uuid)
 RETURNING *;
 
--- name: DeleteProduct :exec
+-- name: DeleteProduct :execrows
 DELETE FROM "Product"
 WHERE "Uuid" = $1;

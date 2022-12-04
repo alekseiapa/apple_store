@@ -28,7 +28,7 @@ func createRandomProduct(t *testing.T) *Product {
 	return &product
 }
 
-func createRandomProductWithPriceAndInStock(t *testing.T, price, inStock int32) *Product {
+func createRandomProductWithPriceAndInStock(t *testing.T, price float32, inStock int32) *Product {
 	arg := CreateProductParams{
 		Description: util.RandomProductDescription(),
 		Price:       price,
@@ -85,7 +85,7 @@ func TestUpdateProduct(t *testing.T) {
 
 func TestDeleteProduct(t *testing.T) {
 	product1 := createRandomProduct(t)
-	err := testQueries.DeleteProduct(context.Background(), product1.Uuid)
+	_, err := testQueries.DeleteProduct(context.Background(), product1.Uuid)
 	require.NoError(t, err)
 
 	product2, err := testQueries.GetProduct(context.Background(), product1.Uuid)

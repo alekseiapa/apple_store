@@ -27,7 +27,7 @@ func TestBuyTx(t *testing.T) {
 	results := make(chan BuyProductTxResult)
 
 	var (
-		finalBalance  int64
+		finalBalance  float32
 		finalInStock  int32
 		toBuyPcs      int32
 		totalToBuyPcs int32
@@ -82,7 +82,7 @@ func TestBuyTx(t *testing.T) {
 
 	}
 	require.Equal(t, product.InStock-totalToBuyPcs, finalInStock)
-	require.Equal(t, user.Balance-int64(totalToBuyPcs*product.Price), finalBalance)
+	require.Equal(t, user.Balance-float32(totalToBuyPcs)*product.Price, finalBalance)
 
 }
 
