@@ -11,17 +11,23 @@ import (
 
 const createOrder = `-- name: CreateOrder :one
 INSERT INTO "Order" (
-	"UserUuid") 
+	"UserUuid",
+  "Quantity") 
 VALUES (
-    $1
+    $1, $2
 )
-RETURNING "Uuid", "UserUuid"
+RETURNING "Uuid", "UserUuid", "Quantity"
 `
 
-func (q *Queries) CreateOrder(ctx context.Context, useruuid int64) (Order, error) {
-	row := q.db.QueryRowContext(ctx, createOrder, useruuid)
+type CreateOrderParams struct {
+	UserUuid int64 `json:"UserUuid"`
+	Quantity int64 `json:"Quantity"`
+}
+
+func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error) {
+	row := q.db.QueryRowContext(ctx, createOrder, arg.UserUuid, arg.Quantity)
 	var i Order
-	err := row.Scan(&i.Uuid, &i.UserUuid)
+	err := row.Scan(&i.Uuid, &i.UserUuid, &i.Quantity)
 	return i, err
 }
 
@@ -36,19 +42,19 @@ func (q *Queries) DeleteOrder(ctx context.Context, uuid int64) error {
 }
 
 const getOrder = `-- name: GetOrder :one
-SELECT "Uuid", "UserUuid" FROM "Order"
+SELECT "Uuid", "UserUuid", "Quantity" FROM "Order"
 WHERE "Uuid" = $1 LIMIT 1
 `
 
 func (q *Queries) GetOrder(ctx context.Context, uuid int64) (Order, error) {
 	row := q.db.QueryRowContext(ctx, getOrder, uuid)
 	var i Order
-	err := row.Scan(&i.Uuid, &i.UserUuid)
+	err := row.Scan(&i.Uuid, &i.UserUuid, &i.Quantity)
 	return i, err
 }
 
 const listOrders = `-- name: ListOrders :many
-SELECT "Uuid", "UserUuid" FROM "Order"
+SELECT "Uuid", "UserUuid", "Quantity" FROM "Order"
 ORDER BY "Uuid"
 LIMIT $1
 OFFSET $2
@@ -65,10 +71,10 @@ func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Order
+	items := []Order{}
 	for rows.Next() {
 		var i Order
-		if err := rows.Scan(&i.Uuid, &i.UserUuid); err != nil {
+		if err := rows.Scan(&i.Uuid, &i.UserUuid, &i.Quantity); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -84,19 +90,21 @@ func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order
 
 const updateOrder = `-- name: UpdateOrder :one
 UPDATE "Order"
-  set "UserUuid" = $2
+  set "UserUuid" = $2,
+      "Quantity" = $3
 WHERE "Uuid" = $1
-RETURNING "Uuid", "UserUuid"
+RETURNING "Uuid", "UserUuid", "Quantity"
 `
 
 type UpdateOrderParams struct {
 	Uuid     int64 `json:"Uuid"`
 	UserUuid int64 `json:"UserUuid"`
+	Quantity int64 `json:"Quantity"`
 }
 
 func (q *Queries) UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order, error) {
-	row := q.db.QueryRowContext(ctx, updateOrder, arg.Uuid, arg.UserUuid)
+	row := q.db.QueryRowContext(ctx, updateOrder, arg.Uuid, arg.UserUuid, arg.Quantity)
 	var i Order
-	err := row.Scan(&i.Uuid, &i.UserUuid)
+	err := row.Scan(&i.Uuid, &i.UserUuid, &i.Quantity)
 	return i, err
 }

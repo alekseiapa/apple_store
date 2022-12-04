@@ -19,6 +19,7 @@ func createRandomUser(t *testing.T) *User {
 		Gender:     util.RandomUserGender(),
 		Age:        int16(util.RandomUserAge()),
 		Balance:    int64(util.RandomUserBalance()),
+		Currency:   util.RandomUserCurrency(),
 	}
 	user, err := testQueries.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
@@ -29,6 +30,8 @@ func createRandomUser(t *testing.T) *User {
 	require.Equal(t, arg.LastName, user.LastName)
 	require.Equal(t, arg.Gender, user.Gender)
 	require.Equal(t, arg.Age, user.Age)
+	require.Equal(t, arg.Balance, user.Balance)
+	require.Equal(t, arg.Currency, user.Currency)
 
 	require.NotZero(t, user.Uuid)
 	return &user
@@ -42,6 +45,7 @@ func createRandomUserWithBalance(t *testing.T, balance int64) *User {
 		Gender:     util.RandomUserGender(),
 		Age:        int16(util.RandomUserAge()),
 		Balance:    balance,
+		Currency:   util.RandomUserCurrency(),
 	}
 	user, err := testQueries.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
@@ -53,6 +57,7 @@ func createRandomUserWithBalance(t *testing.T, balance int64) *User {
 	require.Equal(t, arg.Gender, user.Gender)
 	require.Equal(t, arg.Age, user.Age)
 	require.Equal(t, arg.Balance, user.Balance)
+	require.Equal(t, arg.Currency, user.Currency)
 
 	require.NotZero(t, user.Uuid)
 	return &user
@@ -74,6 +79,8 @@ func TestGetUser(t *testing.T) {
 	require.Equal(t, user1.LastName, user2.LastName)
 	require.Equal(t, user1.Gender, user2.Gender)
 	require.Equal(t, user1.Age, user2.Age)
+	require.Equal(t, user1.Balance, user2.Balance)
+	require.Equal(t, user1.Currency, user2.Currency)
 
 }
 
@@ -88,6 +95,7 @@ func TestUpdateUser(t *testing.T) {
 		Gender:     util.RandomString(1),
 		Age:        int16(util.RandomInt(10, 20)),
 		Balance:    balance,
+		Currency:   util.RandomUserCurrency(),
 	}
 	user2, err := testQueries.UpdateUser(context.Background(), arg)
 	require.NoError(t, err)
@@ -100,12 +108,13 @@ func TestUpdateUser(t *testing.T) {
 	require.Equal(t, user2.Balance, balance)
 	require.Equal(t, user2.FullName, fmt.Sprintf("%s %s %s", arg.LastName, arg.FirstName, arg.MiddleName))
 	require.Equal(t, user2.Age, arg.Age)
+	require.Equal(t, user2.Currency, arg.Currency)
 
 }
 
 func TestDeleteUser(t *testing.T) {
 	user1 := createRandomUser(t)
-	err := testQueries.DeleteUser(context.Background(), user1.Uuid)
+	_, err := testQueries.DeleteUser(context.Background(), user1.Uuid)
 	require.NoError(t, err)
 
 	user2, err := testQueries.GetUser(context.Background(), user1.Uuid)

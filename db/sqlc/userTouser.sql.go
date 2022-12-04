@@ -69,7 +69,7 @@ func (q *Queries) ListUserToUser(ctx context.Context, arg ListUserToUserParams) 
 		return nil, err
 	}
 	defer rows.Close()
-	var items []UserToUser
+	items := []UserToUser{}
 	for rows.Next() {
 		var i UserToUser
 		if err := rows.Scan(&i.FirstUserUuid, &i.SecondUserUuid); err != nil {

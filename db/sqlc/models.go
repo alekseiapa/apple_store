@@ -9,6 +9,7 @@ import ()
 type Order struct {
 	Uuid     int64 `json:"Uuid"`
 	UserUuid int64 `json:"UserUuid"`
+	Quantity int64 `json:"Quantity"`
 }
 
 type OrderProduct struct {
@@ -32,6 +33,7 @@ type User struct {
 	Gender     string `json:"Gender"`
 	Age        int16  `json:"Age"`
 	Balance    int64  `json:"Balance"`
+	Currency   string `json:"Currency"`
 }
 
 type UserToUser struct {

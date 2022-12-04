@@ -13,13 +13,18 @@ migrateup:
 migratedown:
 	migrate --path db/migration --database "postgresql://root:secret@localhost:5432/apple_store?sslmode=disable" --verbose down
 
-.PHONY: database test
-
 sqlc:
 	sqlc generate
 
 test:
 	go test -v -cover ./...
 
+server:
+	go run main.go
+
+
+.PHONY: database test api
+
 # phony targets
 database : postgres createdb dropdb migrateup migratedown sqlc
+api: server

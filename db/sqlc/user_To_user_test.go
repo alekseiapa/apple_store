@@ -62,7 +62,7 @@ func TestUpdateUserToUser(t *testing.T) {
 func TestDeleteUserToUser(t *testing.T) {
 	userToUser1 := createRandomUserToUser(t)
 
-	err := testQueries.DeleteUser(context.Background(), userToUser1.FirstUserUuid)
+	_, err := testQueries.DeleteUser(context.Background(), userToUser1.FirstUserUuid)
 
 	require.NoError(t, err)
 

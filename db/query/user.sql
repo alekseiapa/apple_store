@@ -5,9 +5,10 @@ INSERT INTO "User" (
 	"LastName", 
 	"Gender", 
 	"Age",
-    "Balance") 
+  "Balance",
+  "Currency") 
 VALUES (
-    $1, $2, $3, $4, $5, $6
+    $1, $2, $3, $4, $5, $6, $7
 )
 RETURNING *;
 
@@ -31,7 +32,7 @@ RETURNING *;
 
 -- name: ListUsers :many
 SELECT * FROM "User"
-ORDER BY "FullName"
+ORDER BY "Uuid" ASC
 LIMIT $1
 OFFSET $2;
 
@@ -43,10 +44,11 @@ UPDATE "User"
       "LastName" = $4,
       "Gender" = $5,
       "Age" = $6,
-      "Balance" = $7
+      "Balance" = $7,
+      "Currency" = $8
 WHERE "Uuid" = $1
 RETURNING *;
 
--- name: DeleteUser :exec
+-- name: DeleteUser :execrows
 DELETE FROM "User"
 WHERE "Uuid" = $1;

@@ -58,6 +58,9 @@ func RandomUserAge() int {
 func RandomUserBalance() int {
 	return RandomInt(200, 1000)
 }
+func RandomUserCurrency() string {
+	return RandomString(3)
+}
 
 // Product Table
 func RandomProductDescription() string {
@@ -77,6 +80,9 @@ func RandomProductInStock() int32 {
 // Order Table
 func RandomOrderUseruuid() int64 {
 	return int64(RandomInt(1, 20))
+}
+func RandomOrderQuantity() int64 {
+	return int64(RandomInt(1, 5))
 }
 
 // OrderProduct Table

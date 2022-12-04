@@ -43,7 +43,7 @@ func TestBuyTx(t *testing.T) {
 			result, err := store.BuyProductTx(context.Background(), BuyProductTxParams{
 				UserUuid:    user.Uuid,
 				ProductUuid: product.Uuid,
-				Amount:      toBuyPcs,
+				Quantity:    toBuyPcs,
 			})
 
 			errs <- err
@@ -108,7 +108,7 @@ func TestBuyNotEnoughInStockTx(t *testing.T) {
 			_, err := store.BuyProductTx(context.Background(), BuyProductTxParams{
 				UserUuid:    user.Uuid,
 				ProductUuid: product.Uuid,
-				Amount:      toBuyPcs,
+				Quantity:    toBuyPcs,
 			})
 			errs <- err
 		}()
@@ -143,7 +143,7 @@ func TestBuyNotEnoughMoneyTx(t *testing.T) {
 			_, err := store.BuyProductTx(context.Background(), BuyProductTxParams{
 				UserUuid:    user.Uuid,
 				ProductUuid: product.Uuid,
-				Amount:      toBuyPcs,
+				Quantity:    toBuyPcs,
 			})
 			errs <- err
 		}()

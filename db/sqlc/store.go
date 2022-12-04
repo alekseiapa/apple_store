@@ -42,7 +42,7 @@ func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
 type BuyProductTxParams struct {
 	UserUuid    int64 `json:"UserUuid"`
 	ProductUuid int64 `json:"ProductUuid"`
-	Amount      int32 `json:"Amount"`
+	Quantity    int32 `json:"Quantity"`
 }
 
 // BuyProductTxResult is the result after a successful purchase of a product
@@ -67,7 +67,7 @@ func (store *Store) BuyProductTx(ctx context.Context, arg BuyProductTxParams) (B
 		if err != nil {
 			return err
 		}
-		inStock := product.InStock - arg.Amount
+		inStock := product.InStock - arg.Quantity
 		if inStock < 0 {
 			return fmt.Errorf("sorry you can't buy since there is not enough pcs left. product uuid: %v - %v -> %v pcs left", product.Uuid, product.Description, product.InStock)
 		}
@@ -75,12 +75,12 @@ func (store *Store) BuyProductTx(ctx context.Context, arg BuyProductTxParams) (B
 		if err != nil {
 			return err
 		}
-		userBalance := user.Balance - int64(product.Price)*int64(arg.Amount)
+		userBalance := user.Balance - int64(product.Price)*int64(arg.Quantity)
 		if userBalance < 0 {
-			return fmt.Errorf("sorry, you don't have enough money to purchase %v pcs of product uuid: %v - %v", arg.Amount, product.Uuid, product.Description)
+			return fmt.Errorf("sorry, you don't have enough money to purchase %v pcs of product uuid: %v - %v", arg.Quantity, product.Uuid, product.Description)
 		}
 		result.Product, err = q.ReduceProductInStock(ctx, ReduceProductInStockParams{
-			Amount: arg.Amount,
+			Amount: arg.Quantity,
 			Uuid:   product.Uuid,
 		})
 		if err != nil {
@@ -88,12 +88,15 @@ func (store *Store) BuyProductTx(ctx context.Context, arg BuyProductTxParams) (B
 		}
 		result.User, err = q.ReduceUserBalance(ctx, ReduceUserBalanceParams{
 			Uuid:   user.Uuid,
-			Amount: int64(arg.Amount * product.Price),
+			Amount: int64(arg.Quantity * product.Price),
 		})
 		if err != nil {
 			return err
 		}
-		result.Order, err = q.CreateOrder(ctx, user.Uuid)
+		result.Order, err = q.CreateOrder(ctx, CreateOrderParams{
+			UserUuid: user.Uuid,
+			Quantity: int64(arg.Quantity),
+		})
 		if err != nil {
 			return err
 		}

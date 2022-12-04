@@ -1,8 +1,9 @@
 -- name: CreateOrder :one
 INSERT INTO "Order" (
-	"UserUuid") 
+	"UserUuid",
+  "Quantity") 
 VALUES (
-    $1
+    $1, $2
 )
 RETURNING *;
 
@@ -18,7 +19,8 @@ OFFSET $2;
 
 -- name: UpdateOrder :one
 UPDATE "Order"
-  set "UserUuid" = $2
+  set "UserUuid" = $2,
+      "Quantity" = $3
 WHERE "Uuid" = $1
 RETURNING *;
 

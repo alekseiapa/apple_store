@@ -11,13 +11,16 @@ import (
 )
 
 func createRandomOrder(t *testing.T) Order {
-	useruuid := util.RandomOrderUseruuid()
-	order, err := testQueries.CreateOrder(context.Background(), useruuid)
+	arg := CreateOrderParams{
+		UserUuid: util.RandomOrderUseruuid(),
+		Quantity: util.RandomOrderQuantity(),
+	}
+	order, err := testQueries.CreateOrder(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, order)
 
-	require.Equal(t, useruuid, order.UserUuid)
-
+	require.Equal(t, arg.UserUuid, order.UserUuid)
+	require.Equal(t, arg.Quantity, order.Quantity)
 	require.NotZero(t, order.Uuid)
 	return order
 }
@@ -32,14 +35,15 @@ func TestGetOrder(t *testing.T) {
 	require.NotEmpty(t, order2)
 
 	require.Equal(t, order1.UserUuid, order2.UserUuid)
+	require.Equal(t, order1.Quantity, order2.Quantity)
 }
 
 func TestUpdateOrder(t *testing.T) {
 	order1 := createRandomOrder(t)
-	userUuid := int64(util.RandomInt(10, 20))
 	arg := UpdateOrderParams{
 		Uuid:     order1.Uuid,
-		UserUuid: userUuid,
+		UserUuid: int64(util.RandomInt(10, 20)),
+		Quantity: util.RandomOrderQuantity(),
 	}
 	order2, err := testQueries.UpdateOrder(context.Background(), arg)
 	require.NoError(t, err)
@@ -47,6 +51,7 @@ func TestUpdateOrder(t *testing.T) {
 
 	require.Equal(t, order2.Uuid, arg.Uuid)
 	require.Equal(t, order2.UserUuid, arg.UserUuid)
+	require.Equal(t, order2.Quantity, arg.Quantity)
 
 }
 

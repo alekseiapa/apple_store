@@ -6,12 +6,14 @@ CREATE TABLE "User" (
   "FullName" varchar NOT NULL GENERATED ALWAYS AS ("LastName" || ' ' || "FirstName" || ' ' || "MiddleName") STORED,
   "Gender" varchar(1) NOT NULL,
   "Age" smallint NOT NULL,
-  "Balance" bigint NOT NULL DEFAULT 0
+  "Balance" bigint NOT NULL DEFAULT 0,
+  "Currency" varchar(3) NOT NULL
 );
 
 CREATE TABLE "Order" (
   "Uuid" bigserial PRIMARY KEY,
-  "UserUuid" bigint NOT NULL
+  "UserUuid" bigint NOT NULL,
+  "Quantity" bigint NOT NULL
 );
 
 CREATE TABLE "Product" (
