@@ -21,6 +21,15 @@ func (server *Server) createOrder(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+
+	if !server.validUser(ctx, req.UserUuid) {
+		return
+	}
+
+	if !server.validProduct(ctx, req.ProductUuid) {
+		return
+	}
+
 	arg := db.BuyProductTxParams{
 		UserUuid:    req.UserUuid,
 		Quantity:    req.Quantity,
@@ -61,4 +70,34 @@ func (server *Server) deleteOrder(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, successDeleteResponse())
+}
+
+func (server *Server) validUser(ctx *gin.Context, UserUuid int64) bool {
+	_, err := server.store.GetUser(ctx, UserUuid)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return false
+		}
+
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return false
+	}
+
+	return true
+}
+
+func (server *Server) validProduct(ctx *gin.Context, ProductUuid int64) bool {
+	_, err := server.store.GetProduct(ctx, ProductUuid)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return false
+		}
+
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return false
+	}
+
+	return true
 }
