@@ -10,8 +10,14 @@ dropdb:
 migrateup:
 	migrate --path db/migration --database "postgresql://root:secret@localhost:5432/apple_store?sslmode=disable" --verbose up
 
+migrateup1ver:
+	migrate --path db/migration --database "postgresql://root:secret@localhost:5432/apple_store?sslmode=disable" --verbose up 1
+
 migratedown:
 	migrate --path db/migration --database "postgresql://root:secret@localhost:5432/apple_store?sslmode=disable" --verbose down
+
+migratedown1ver:
+	migrate --path db/migration --database "postgresql://root:secret@localhost:5432/apple_store?sslmode=disable" --verbose down 1
 
 sqlc:
 	sqlc generate
@@ -29,5 +35,5 @@ mock:
 .PHONY: database test api mock
 
 # phony targets
-database : postgres createdb dropdb migrateup migratedown sqlc
+database : postgres createdb dropdb migrateup migratedown sqlc migrateup1ver migratedown1ver
 api: server

@@ -27,3 +27,15 @@ RETURNING *;
 -- name: DeleteOrder :execrows
 DELETE FROM "Order"
 WHERE "Uuid" = $1;
+
+-- TODO: Read the doc of sqlc to determine the way how to retrieve many2many data
+-- SELECT 
+-- "Order"."Uuid" AS "Order Uuid",
+-- (SELECT "User"."FullName" FROM "User" WHERE "Order"."UserUuid" = "User"."Uuid") AS "User Name",
+-- "Order"."Quantity" AS "Order Qty", 
+-- "Product"."Uuid" AS "Product Uuid",
+-- "Product"."Description" AS "Product Description"
+-- FROM "OrderProduct"
+-- INNER JOIN "Order" ON "Order"."Uuid" = "OrderProduct"."OrderUuid"
+-- INNER JOIN "Product" ON "Product"."Uuid" = "OrderProduct"."ProductUuid"
+-- WHERE "Order"."Uuid" = 1;
