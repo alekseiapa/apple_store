@@ -53,6 +53,7 @@ func createRandomUserWithBalance(t *testing.T, balance float32) *User {
 		Gender:     util.RandomUserGender(),
 		Age:        int16(util.RandomUserAge()),
 		Balance:    balance,
+		Username:   util.RandomString(6),
 	}
 	user, err := testQueries.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
@@ -64,6 +65,7 @@ func createRandomUserWithBalance(t *testing.T, balance float32) *User {
 	require.Equal(t, arg.Gender, user.Gender)
 	require.Equal(t, arg.Age, user.Age)
 	require.Equal(t, arg.Balance, user.Balance)
+	require.Equal(t, arg.Username, user.Username)
 
 	require.NotZero(t, user.Uuid)
 	return &user

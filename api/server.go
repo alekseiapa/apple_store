@@ -1,20 +1,40 @@
 package api
 
 import (
+	"fmt"
+
 	db "github.com/alekseiapa/apple_store/db/sqlc"
+	"github.com/alekseiapa/apple_store/token"
+	"github.com/alekseiapa/apple_store/util"
 	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
-	store  db.Store
-	router *gin.Engine
+	config     util.Config
+	store      db.Store
+	tokenMaker token.Maker
+	router     *gin.Engine
 }
 
-func NewServer(store db.Store) *Server {
-	server := &Server{store: store}
+func NewServer(config util.Config, store db.Store) (*Server, error) {
+	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
+	if err != nil {
+		return nil, fmt.Errorf("error creating token maker: %v", err)
+	}
+	server := &Server{
+		config:     config,
+		store:      store,
+		tokenMaker: tokenMaker,
+	}
+	server.setupRouter()
+	return server, nil
+}
+
+func (server *Server) setupRouter() {
 	router := gin.Default()
 
 	router.POST("/api/users", server.createUser)
+	router.POST("/api/users/login", server.loginUser)
 	router.GET("/api/users/:id", server.getUser)
 	router.GET("/api/users", server.listUser)
 	router.PUT("/api/users/:id", server.updateUser)
@@ -35,7 +55,6 @@ func NewServer(store db.Store) *Server {
 	// router.PUT("/api/orders/:id", server.updateProduct)
 
 	server.router = router
-	return server
 }
 
 // Start runs the HTTP server on a specific address to start listening the api requests

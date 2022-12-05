@@ -22,3 +22,5 @@ go.work
 
 # IDE workspace file
 .vscode
+
+*.env

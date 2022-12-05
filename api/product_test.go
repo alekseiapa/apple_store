@@ -91,7 +91,7 @@ func TestGetProductAPI(t *testing.T) {
 			store := mockdb.NewMockStore(ctrl)
 			tc.buildStubs(store)
 
-			server := NewServer(store)
+			server := NewTestServer(t, store)
 			//For testing an HTTP API in Go, we don’t have to start a real HTTP server,
 			//Instead, we can just use the Recorder feature of the httptest package
 			//to record the response of the API request.
