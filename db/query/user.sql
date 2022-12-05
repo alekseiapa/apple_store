@@ -6,8 +6,8 @@ INSERT INTO "User" (
 	"Gender", 
 	"Age",
   "Balance",
-  "username",
-  "hashed_password") 
+  "Username",
+  "HashedPassword") 
 VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8
 )
@@ -45,7 +45,8 @@ UPDATE "User"
       "LastName" = $4,
       "Gender" = $5,
       "Age" = $6,
-      "Balance" = $7
+      "Balance" = $7,
+      "HashedPassword" = $8
 WHERE "Uuid" = $1
 RETURNING *;
 

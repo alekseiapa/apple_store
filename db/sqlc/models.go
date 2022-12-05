@@ -25,14 +25,16 @@ type Product struct {
 }
 
 type User struct {
-	Uuid       int64   `json:"Uuid"`
-	FirstName  string  `json:"FirstName"`
-	MiddleName string  `json:"MiddleName"`
-	LastName   string  `json:"LastName"`
-	FullName   string  `json:"FullName"`
-	Gender     string  `json:"Gender"`
-	Age        int16   `json:"Age"`
-	Balance    float32 `json:"Balance"`
+	Uuid           int64   `json:"Uuid"`
+	FirstName      string  `json:"FirstName"`
+	MiddleName     string  `json:"MiddleName"`
+	LastName       string  `json:"LastName"`
+	FullName       string  `json:"FullName"`
+	Gender         string  `json:"Gender"`
+	Age            int16   `json:"Age"`
+	Balance        float32 `json:"Balance"`
+	Username       string  `json:"Username"`
+	HashedPassword string  `json:"HashedPassword"`
 }
 
 type UserToUser struct {

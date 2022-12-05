@@ -13,12 +13,14 @@ import (
 
 func createRandomUser(t *testing.T) *User {
 	arg := CreateUserParams{
-		FirstName:  util.RandomUserFirstName(),
-		MiddleName: util.RandomUserMiddleName(),
-		LastName:   util.RandomUserLastName(),
-		Gender:     util.RandomUserGender(),
-		Age:        int16(util.RandomUserAge()),
-		Balance:    util.RandomUserBalance(),
+		FirstName:      util.RandomUserFirstName(),
+		MiddleName:     util.RandomUserMiddleName(),
+		LastName:       util.RandomUserLastName(),
+		Gender:         util.RandomUserGender(),
+		Age:            int16(util.RandomUserAge()),
+		Balance:        util.RandomUserBalance(),
+		Username:       util.RandomString(12),
+		HashedPassword: util.RandomString(12),
 	}
 	user, err := testQueries.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
@@ -30,6 +32,8 @@ func createRandomUser(t *testing.T) *User {
 	require.Equal(t, arg.Gender, user.Gender)
 	require.Equal(t, arg.Age, user.Age)
 	require.Equal(t, arg.Balance, user.Balance)
+	require.Equal(t, arg.Username, user.Username)
+	require.Equal(t, arg.HashedPassword, user.HashedPassword)
 
 	require.NotZero(t, user.Uuid)
 	return &user
@@ -83,13 +87,14 @@ func TestUpdateUser(t *testing.T) {
 	user1 := createRandomUser(t)
 	balance := util.RandomFloat(10.00, 20.00)
 	arg := UpdateUserParams{
-		Uuid:       user1.Uuid,
-		FirstName:  util.RandomString(12),
-		MiddleName: util.RandomString(12),
-		LastName:   util.RandomString(12),
-		Gender:     util.RandomString(1),
-		Age:        int16(util.RandomInt(10, 20)),
-		Balance:    balance,
+		Uuid:           user1.Uuid,
+		FirstName:      util.RandomString(12),
+		MiddleName:     util.RandomString(12),
+		LastName:       util.RandomString(12),
+		Gender:         util.RandomString(1),
+		Age:            int16(util.RandomInt(10, 20)),
+		Balance:        balance,
+		HashedPassword: util.RandomString(12),
 	}
 	user2, err := testQueries.UpdateUser(context.Background(), arg)
 	require.NoError(t, err)
@@ -102,6 +107,7 @@ func TestUpdateUser(t *testing.T) {
 	require.Equal(t, user2.Balance, balance)
 	require.Equal(t, user2.FullName, fmt.Sprintf("%s %s %s", arg.LastName, arg.FirstName, arg.MiddleName))
 	require.Equal(t, user2.Age, arg.Age)
+	require.Equal(t, user2.HashedPassword, arg.HashedPassword)
 
 }
 

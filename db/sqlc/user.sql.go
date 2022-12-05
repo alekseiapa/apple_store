@@ -16,20 +16,24 @@ INSERT INTO "User" (
 	"LastName", 
 	"Gender", 
 	"Age",
-  "Balance") 
+  "Balance",
+  "Username",
+  "HashedPassword") 
 VALUES (
-    $1, $2, $3, $4, $5, $6
+    $1, $2, $3, $4, $5, $6, $7, $8
 )
-RETURNING "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance"
+RETURNING "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance", "Username", "HashedPassword"
 `
 
 type CreateUserParams struct {
-	FirstName  string  `json:"FirstName"`
-	MiddleName string  `json:"MiddleName"`
-	LastName   string  `json:"LastName"`
-	Gender     string  `json:"Gender"`
-	Age        int16   `json:"Age"`
-	Balance    float32 `json:"Balance"`
+	FirstName      string  `json:"FirstName"`
+	MiddleName     string  `json:"MiddleName"`
+	LastName       string  `json:"LastName"`
+	Gender         string  `json:"Gender"`
+	Age            int16   `json:"Age"`
+	Balance        float32 `json:"Balance"`
+	Username       string  `json:"Username"`
+	HashedPassword string  `json:"HashedPassword"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -40,6 +44,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.Gender,
 		arg.Age,
 		arg.Balance,
+		arg.Username,
+		arg.HashedPassword,
 	)
 	var i User
 	err := row.Scan(
@@ -51,6 +57,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Gender,
 		&i.Age,
 		&i.Balance,
+		&i.Username,
+		&i.HashedPassword,
 	)
 	return i, err
 }
@@ -69,7 +77,7 @@ func (q *Queries) DeleteUser(ctx context.Context, uuid int64) (int64, error) {
 }
 
 const getUser = `-- name: GetUser :one
-SELECT "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance" FROM "User"
+SELECT "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance", "Username", "HashedPassword" FROM "User"
 WHERE "Uuid" = $1 LIMIT 1
 `
 
@@ -85,12 +93,14 @@ func (q *Queries) GetUser(ctx context.Context, uuid int64) (User, error) {
 		&i.Gender,
 		&i.Age,
 		&i.Balance,
+		&i.Username,
+		&i.HashedPassword,
 	)
 	return i, err
 }
 
 const getUserForUpdate = `-- name: GetUserForUpdate :one
-SELECT "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance" FROM "User"
+SELECT "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance", "Username", "HashedPassword" FROM "User"
 WHERE "Uuid" = $1 LIMIT 1
 FOR NO KEY UPDATE
 `
@@ -108,12 +118,14 @@ func (q *Queries) GetUserForUpdate(ctx context.Context, uuid int64) (User, error
 		&i.Gender,
 		&i.Age,
 		&i.Balance,
+		&i.Username,
+		&i.HashedPassword,
 	)
 	return i, err
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance" FROM "User"
+SELECT "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance", "Username", "HashedPassword" FROM "User"
 ORDER BY "Uuid" ASC
 LIMIT $1
 OFFSET $2
@@ -142,6 +154,8 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 			&i.Gender,
 			&i.Age,
 			&i.Balance,
+			&i.Username,
+			&i.HashedPassword,
 		); err != nil {
 			return nil, err
 		}
@@ -160,7 +174,7 @@ const reduceUserBalance = `-- name: ReduceUserBalance :one
 UPDATE "User"
   set "Balance" = "Balance" - $1 
 WHERE "Uuid" = $2
-RETURNING "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance"
+RETURNING "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance", "Username", "HashedPassword"
 `
 
 type ReduceUserBalanceParams struct {
@@ -180,6 +194,8 @@ func (q *Queries) ReduceUserBalance(ctx context.Context, arg ReduceUserBalancePa
 		&i.Gender,
 		&i.Age,
 		&i.Balance,
+		&i.Username,
+		&i.HashedPassword,
 	)
 	return i, err
 }
@@ -191,19 +207,21 @@ UPDATE "User"
       "LastName" = $4,
       "Gender" = $5,
       "Age" = $6,
-      "Balance" = $7
+      "Balance" = $7,
+      "HashedPassword" = $8
 WHERE "Uuid" = $1
-RETURNING "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance"
+RETURNING "Uuid", "FirstName", "MiddleName", "LastName", "FullName", "Gender", "Age", "Balance", "Username", "HashedPassword"
 `
 
 type UpdateUserParams struct {
-	Uuid       int64   `json:"Uuid"`
-	FirstName  string  `json:"FirstName"`
-	MiddleName string  `json:"MiddleName"`
-	LastName   string  `json:"LastName"`
-	Gender     string  `json:"Gender"`
-	Age        int16   `json:"Age"`
-	Balance    float32 `json:"Balance"`
+	Uuid           int64   `json:"Uuid"`
+	FirstName      string  `json:"FirstName"`
+	MiddleName     string  `json:"MiddleName"`
+	LastName       string  `json:"LastName"`
+	Gender         string  `json:"Gender"`
+	Age            int16   `json:"Age"`
+	Balance        float32 `json:"Balance"`
+	HashedPassword string  `json:"HashedPassword"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
@@ -215,6 +233,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		arg.Gender,
 		arg.Age,
 		arg.Balance,
+		arg.HashedPassword,
 	)
 	var i User
 	err := row.Scan(
@@ -226,6 +245,8 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Gender,
 		&i.Age,
 		&i.Balance,
+		&i.Username,
+		&i.HashedPassword,
 	)
 	return i, err
 }
