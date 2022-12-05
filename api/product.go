@@ -199,7 +199,7 @@ func (server *Server) deleteProduct(ctx *gin.Context) {
 		return
 	}
 	if r == 0 {
-		ctx.JSON(http.StatusNotFound, notFoundResponse())
+		ctx.JSON(http.StatusNotFound, notFoundResponse("product"))
 		return
 	}
 	ctx.JSON(http.StatusOK, successDeleteResponse())

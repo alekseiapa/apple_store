@@ -25,6 +25,7 @@ func NewTestServer(t *testing.T, store db.Store) *Server {
 	return server
 }
 
+// config the way how the tests will run. In this case I want to make the output less verbose
 func TestMain(m *testing.M) {
 	gin.SetMode(gin.TestMode)
 	os.Exit(m.Run())

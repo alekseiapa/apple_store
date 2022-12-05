@@ -33,6 +33,9 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
+	// TODO: add protected routes
+	// authRoutes := router.Group("/api").Use(authMiddleware(server.tokenMaker))
+
 	router.POST("/api/users", server.createUser)
 	router.POST("/api/users/login", server.loginUser)
 	router.GET("/api/users/:id", server.getUser)
@@ -66,8 +69,8 @@ func successDeleteResponse() gin.H {
 	return gin.H{"success": "Deleted successfully"}
 }
 
-func notFoundResponse() gin.H {
-	return gin.H{"error": "Not Found"}
+func notFoundResponse(obj string) gin.H {
+	return gin.H{"error": fmt.Sprintf("%s not found", obj)}
 }
 
 func errorResponse(err error) gin.H {

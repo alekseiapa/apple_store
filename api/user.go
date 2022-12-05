@@ -97,6 +97,12 @@ func (server *Server) getUser(ctx *gin.Context) {
 	}
 
 	user, err := server.store.GetUser(ctx, req.Uuid)
+	// authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	// if user.Username != authPayload.Username {
+	// 	err := errors.New("can't buy on a behalf of other user")
+	// 	ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+	// 	return
+	// }
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
@@ -205,7 +211,12 @@ func (server *Server) deleteUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
+	// authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	// if user.Username != authPayload.Username {
+	// 	err := errors.New("can't buy on a behalf of other user")
+	// 	ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+	// 	return
+	// }
 	r, err := server.store.DeleteUser(ctx, req.Uuid)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -216,7 +227,7 @@ func (server *Server) deleteUser(ctx *gin.Context) {
 		return
 	}
 	if r == 0 {
-		ctx.JSON(http.StatusNotFound, notFoundResponse())
+		ctx.JSON(http.StatusNotFound, notFoundResponse("user"))
 		return
 	}
 	ctx.JSON(http.StatusOK, successDeleteResponse())

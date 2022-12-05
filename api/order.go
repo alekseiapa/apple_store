@@ -66,7 +66,7 @@ func (server *Server) deleteOrder(ctx *gin.Context) {
 		return
 	}
 	if r == 0 {
-		ctx.JSON(http.StatusNotFound, notFoundResponse())
+		ctx.JSON(http.StatusNotFound, notFoundResponse("order"))
 		return
 	}
 	ctx.JSON(http.StatusOK, successDeleteResponse())
