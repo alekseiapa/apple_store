@@ -38,4 +38,4 @@ WHERE "Uuid" = $1;
 -- FROM "OrderProduct"
 -- INNER JOIN "Order" ON "Order"."Uuid" = "OrderProduct"."OrderUuid"
 -- INNER JOIN "Product" ON "Product"."Uuid" = "OrderProduct"."ProductUuid"
--- WHERE "Order"."Uuid" = 1;
+-- WHERE "Order"."Uuid" = 1;dd
