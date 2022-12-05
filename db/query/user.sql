@@ -17,6 +17,10 @@ RETURNING *;
 SELECT * FROM "User"
 WHERE "Uuid" = $1 LIMIT 1;
 
+-- name: GetUserByUserName :one
+SELECT * FROM "User"
+WHERE "Username" = $1 LIMIT 1;
+
 -- This will allow us to block transactions till the end of commit
 -- name: GetUserForUpdate :one
 SELECT * FROM "User"

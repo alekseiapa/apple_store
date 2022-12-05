@@ -54,3 +54,7 @@ func notFoundResponse() gin.H {
 func errorResponse(err error) gin.H {
 	return gin.H{"error": err.Error()}
 }
+
+func userNameExistsResponse() gin.H {
+	return gin.H{"error": "Username already exists"}
+}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"testing"
 
 	"github.com/alekseiapa/apple_store/util"
@@ -12,6 +13,11 @@ import (
 )
 
 func createRandomUser(t *testing.T) *User {
+
+	hashedPassword, err := util.HashPassword(util.RandomString(6))
+	if err != nil {
+		log.Fatal(err)
+	}
 	arg := CreateUserParams{
 		FirstName:      util.RandomUserFirstName(),
 		MiddleName:     util.RandomUserMiddleName(),
@@ -20,7 +26,7 @@ func createRandomUser(t *testing.T) *User {
 		Age:            int16(util.RandomUserAge()),
 		Balance:        util.RandomUserBalance(),
 		Username:       util.RandomString(12),
-		HashedPassword: util.RandomString(12),
+		HashedPassword: hashedPassword,
 	}
 	user, err := testQueries.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
@@ -86,6 +92,10 @@ func TestGetUser(t *testing.T) {
 func TestUpdateUser(t *testing.T) {
 	user1 := createRandomUser(t)
 	balance := util.RandomFloat(10.00, 20.00)
+	hashedPassword, err := util.HashPassword(util.RandomString(6))
+	if err != nil {
+		log.Fatal(err)
+	}
 	arg := UpdateUserParams{
 		Uuid:           user1.Uuid,
 		FirstName:      util.RandomString(12),
@@ -94,7 +104,7 @@ func TestUpdateUser(t *testing.T) {
 		Gender:         util.RandomString(1),
 		Age:            int16(util.RandomInt(10, 20)),
 		Balance:        balance,
-		HashedPassword: util.RandomString(12),
+		HashedPassword: hashedPassword,
 	}
 	user2, err := testQueries.UpdateUser(context.Background(), arg)
 	require.NoError(t, err)

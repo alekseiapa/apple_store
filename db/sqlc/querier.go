@@ -22,6 +22,7 @@ type Querier interface {
 	GetProduct(ctx context.Context, uuid int64) (Product, error)
 	GetProductForUpdate(ctx context.Context, uuid int64) (Product, error)
 	GetUser(ctx context.Context, uuid int64) (User, error)
+	GetUserByUserName(ctx context.Context, username string) (User, error)
 	// This will allow us to block transactions till the end of commit
 	GetUserForUpdate(ctx context.Context, uuid int64) (User, error)
 	GetUserToUser(ctx context.Context, arg GetUserToUserParams) (UserToUser, error)
