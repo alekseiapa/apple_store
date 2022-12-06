@@ -11,18 +11,28 @@ import (
 )
 
 type productResponse struct {
-	Price       float32
-	Currency    string
-	InStock     int32
-	Description string
-	Uuid        int64
+	Uuid        int64   `json:"uuid"`
+	Price       float32 `json:"price"`
+	Currency    string  `json:"currency"`
+	InStock     int32   `json:"in_stock"`
+	Description string  `json:"description"`
+}
+
+func newProductResponse(product db.Product, currency string, price float32) productResponse {
+	return productResponse{
+		Uuid:        product.Uuid,
+		Price:       price,
+		InStock:     product.InStock,
+		Description: product.Description,
+		Currency:    currency,
+	}
 }
 
 type createProductRequest struct {
-	Description string  `json:"Description" binding:"required"`
-	Price       float32 `json:"Price" binding:"required"`
-	InStock     int32   `json:"InStock" binding:"required"`
-	Currency    string  `json:"Currency" binding:"required,oneof=USD EUR RUB"`
+	Description string  `json:"description" binding:"required"`
+	Price       float32 `json:"price" binding:"required"`
+	InStock     int32   `json:"in_stock" binding:"required"`
+	Currency    string  `json:"currency" binding:"required,oneof=USD EUR RUB"`
 }
 
 func (server *Server) createProduct(ctx *gin.Context) {
@@ -43,13 +53,7 @@ func (server *Server) createProduct(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	prodRespJson := productResponse{
-		Description: product.Description,
-		InStock:     product.InStock,
-		Uuid:        product.Uuid,
-		Currency:    req.Currency,
-		Price:       req.Price,
-	}
+	prodRespJson := newProductResponse(product, req.Currency, req.Price)
 	ctx.JSON(http.StatusCreated, prodRespJson)
 }
 
@@ -83,13 +87,7 @@ func (server *Server) getProduct(ctx *gin.Context) {
 		return
 	}
 
-	prodRespJson := productResponse{
-		Description: product.Description,
-		InStock:     product.InStock,
-		Uuid:        product.Uuid,
-		Currency:    reqQuery.Currency,
-		Price:       util.ConvertCur("USD", reqQuery.Currency, product.Price),
-	}
+	prodRespJson := newProductResponse(product, reqQuery.Currency, util.ConvertCur("USD", reqQuery.Currency, product.Price))
 	ctx.JSON(http.StatusOK, prodRespJson)
 }
 
@@ -116,13 +114,8 @@ func (server *Server) listProduct(ctx *gin.Context) {
 		return
 	}
 	for _, product := range products {
-		respProducts = append(respProducts, productResponse{
-			Description: product.Description,
-			InStock:     product.InStock,
-			Uuid:        product.Uuid,
-			Currency:    req.Currency,
-			Price:       util.ConvertCur("USD", req.Currency, product.Price),
-		})
+		respProduct := newProductResponse(product, req.Currency, util.ConvertCur("USD", req.Currency, product.Price))
+		respProducts = append(respProducts, respProduct)
 	}
 
 	ctx.JSON(http.StatusOK, respProducts)
@@ -132,10 +125,10 @@ type updateProductRequestUri struct {
 	Uuid int64 `uri:"id" binding:"required,min=1"`
 }
 type updateProductRequestJson struct {
-	Description string  `json:"Description" binding:"required"`
-	Price       float32 `json:"Price" binding:"required"`
-	InStock     int32   `json:"InStock" binding:"required"`
-	Currency    string  `json:"Currency" binding:"required,oneof=USD EUR RUB"`
+	Description string  `json:"description" binding:"required"`
+	Price       float32 `json:"price" binding:"required"`
+	InStock     int32   `json:"in_stock" binding:"required"`
+	Currency    string  `json:"currency" binding:"required,oneof=USD EUR RUB"`
 }
 
 func (server *Server) updateProduct(ctx *gin.Context) {
@@ -168,13 +161,8 @@ func (server *Server) updateProduct(ctx *gin.Context) {
 		return
 	}
 	log.Println(product.InStock)
-	prodRespJson := productResponse{
-		Description: product.Description,
-		InStock:     product.InStock,
-		Uuid:        product.Uuid,
-		Currency:    reqJson.Currency,
-		Price:       reqJson.Price,
-	}
+	prodRespJson := newProductResponse(product, reqJson.Currency, util.ConvertCur("USD", reqJson.Currency, product.Price))
+
 	ctx.JSON(http.StatusOK, prodRespJson)
 }
 

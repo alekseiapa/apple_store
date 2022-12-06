@@ -49,6 +49,7 @@ func (server *Server) setupRouter() {
 	router.PUT("/api/products/:id", server.updateProduct)
 	router.DELETE("/api/products/:id", server.deleteProduct)
 
+	router.GET("/api/orders/:id", server.getOrder)
 	router.POST("/api/orders", server.createOrder)
 	router.DELETE("/api/orders/:id", server.deleteOrder)
 

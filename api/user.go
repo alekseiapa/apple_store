@@ -11,28 +11,30 @@ import (
 )
 
 type createUserRequest struct {
-	FirstName  string  `json:"FirstName" binding:"required"`
-	MiddleName string  `json:"MiddleName" binding:"required"`
-	LastName   string  `json:"LastName" binding:"required"`
-	Gender     string  `json:"Gender" binding:"required,oneof=M F"`
-	Age        int16   `json:"Age" binding:"required"`
-	Balance    float32 `json:"Balance" binding:"required"`
-	Username   string  `json:"Username" binding:"required,alphanum"`
-	Password   string  `json:"Password" binding:"required,min=6"`
+	FirstName  string  `json:"first_name" binding:"required"`
+	MiddleName string  `json:"middle_name" binding:"required"`
+	LastName   string  `json:"last_name" binding:"required"`
+	Gender     string  `json:"gender" binding:"required,oneof=M F"`
+	Age        int16   `json:"age" binding:"required"`
+	Balance    float32 `json:"balance" binding:"required"`
+	Username   string  `json:"username" binding:"required,alphanum"`
+	Password   string  `json:"password" binding:"required,min=6"`
 }
 
 type userResponse struct {
-	FirstName  string  `json:"FirstName" binding:"required"`
-	MiddleName string  `json:"MiddleName" binding:"required"`
-	LastName   string  `json:"LastName" binding:"required"`
-	Gender     string  `json:"Gender" binding:"required,oneof=M F"`
-	Age        int16   `json:"Age" binding:"required"`
-	Balance    float32 `json:"Balance" binding:"required"`
-	Username   string  `json:"Username" binding:"required,alphanum"`
+	Uuid       int64   `json:"uuid"`
+	FirstName  string  `json:"first_name"`
+	MiddleName string  `json:"middle_name"`
+	LastName   string  `json:"last_name"`
+	Gender     string  `json:"gender"`
+	Age        int16   `json:"age"`
+	Balance    float32 `json:"balance"`
+	Username   string  `json:"username"`
 }
 
 func newUserResponse(user db.User) userResponse {
 	return userResponse{
+		Uuid:       user.Uuid,
 		FirstName:  user.FirstName,
 		MiddleName: user.MiddleName,
 		LastName:   user.LastName,
@@ -150,13 +152,13 @@ type updateUserRequestUri struct {
 	Uuid int64 `uri:"id" binding:"required,min=1"`
 }
 type updateUserRequestJson struct {
-	FirstName  string  `json:"FirstName" binding:"required"`
-	MiddleName string  `json:"MiddleName" binding:"required"`
-	LastName   string  `json:"LastName" binding:"required"`
-	Gender     string  `json:"Gender" binding:"required,oneof=M F"`
-	Age        int16   `json:"Age" binding:"required"`
-	Balance    float32 `json:"Balance" binding:"required"`
-	Password   string  `json:"Password" binding:"required"`
+	FirstName  string  `json:"first_name" binding:"required"`
+	MiddleName string  `json:"middle_name" binding:"required"`
+	LastName   string  `json:"last_name" binding:"required"`
+	Gender     string  `json:"gender" binding:"required,oneof=M F"`
+	Age        int16   `json:"age" binding:"required"`
+	Balance    float32 `json:"balance" binding:"required"`
+	Password   string  `json:"password" binding:"required"`
 }
 
 func (server *Server) updateUser(ctx *gin.Context) {
@@ -234,13 +236,13 @@ func (server *Server) deleteUser(ctx *gin.Context) {
 }
 
 type loginUserRequest struct {
-	Username string `json:"Username" binding:"required"`
-	Password string `json:"Password" binding:"required"`
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 type loginUserResponse struct {
-	AccessToken string       `json:"AccessToken" binding:"required"`
-	User        userResponse `json:"User" binding:"required"`
+	AccessToken string       `json:"access_token" binding:"required"`
+	User        userResponse `json:"user" binding:"required"`
 }
 
 func (server *Server) loginUser(ctx *gin.Context) {

@@ -123,8 +123,13 @@ func requireBodyMatchProduct(t *testing.T, body *bytes.Buffer, product db.Produc
 	if err != nil {
 		log.Fatal(err)
 	}
-	var gotProduct db.Product
+
+	var gotProduct productResponse
 	err = json.Unmarshal(data, &gotProduct)
+	fmt.Println(gotProduct)
 	require.NoError(t, err)
-	require.Equal(t, product, gotProduct)
+	require.Equal(t, product.Uuid, gotProduct.Uuid)
+	require.Equal(t, product.Price, gotProduct.Price)
+	require.Equal(t, product.Description, gotProduct.Description)
+	require.Equal(t, product.InStock, gotProduct.InStock)
 }

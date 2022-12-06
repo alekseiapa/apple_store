@@ -119,14 +119,14 @@ func TestCreateUserAPI(t *testing.T) {
 		{
 			name: "OK",
 			body: gin.H{
-				"FirstName":  user.FirstName,
-				"MiddleName": user.MiddleName,
-				"LastName":   user.LastName,
-				"Gender":     user.Gender,
-				"Age":        user.Age,
-				"Balance":    user.Balance,
-				"Username":   user.Username,
-				"Password":   password,
+				"first_name":  user.FirstName,
+				"middle_name": user.MiddleName,
+				"last_name":   user.LastName,
+				"gender":      user.Gender,
+				"age":         user.Age,
+				"balance":     user.Balance,
+				"username":    user.Username,
+				"password":    password,
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
@@ -142,14 +142,14 @@ func TestCreateUserAPI(t *testing.T) {
 		{
 			name: "InternalError",
 			body: gin.H{
-				"FirstName":  user.FirstName,
-				"MiddleName": user.MiddleName,
-				"LastName":   user.LastName,
-				"Gender":     user.Gender,
-				"Age":        user.Age,
-				"Balance":    user.Balance,
-				"Username":   user.Username,
-				"Password":   password,
+				"first_name":  user.FirstName,
+				"middle_name": user.MiddleName,
+				"last_name":   user.LastName,
+				"gender":      user.Gender,
+				"age":         user.Age,
+				"balance":     user.Balance,
+				"username":    user.Username,
+				"password":    password,
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
@@ -164,14 +164,14 @@ func TestCreateUserAPI(t *testing.T) {
 		{
 			name: "DuplicateUsername",
 			body: gin.H{
-				"FirstName":  user.FirstName,
-				"MiddleName": user.MiddleName,
-				"LastName":   user.LastName,
-				"Gender":     user.Gender,
-				"Age":        user.Age,
-				"Balance":    user.Balance,
-				"Username":   user.Username,
-				"Password":   password,
+				"first_name":  user.FirstName,
+				"middle_name": user.MiddleName,
+				"last_name":   user.LastName,
+				"gender":      user.Gender,
+				"age":         user.Age,
+				"balance":     user.Balance,
+				"username":    user.Username,
+				"password":    password,
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
@@ -186,14 +186,14 @@ func TestCreateUserAPI(t *testing.T) {
 		{
 			name: "InvalidUsername",
 			body: gin.H{
-				"FirstName":  user.FirstName,
-				"MiddleName": user.MiddleName,
-				"LastName":   user.LastName,
-				"Gender":     user.Gender,
-				"Age":        user.Age,
-				"Balance":    user.Balance,
-				"Username":   "invalid-password",
-				"Password":   password,
+				"first_name":  user.FirstName,
+				"middle_name": user.MiddleName,
+				"last_name":   user.LastName,
+				"gender":      user.Gender,
+				"age":         user.Age,
+				"balance":     user.Balance,
+				"username":    "invalid-username",
+				"password":    password,
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
@@ -207,14 +207,14 @@ func TestCreateUserAPI(t *testing.T) {
 		{
 			name: "TooShortPassword",
 			body: gin.H{
-				"FirstName":  user.FirstName,
-				"MiddleName": user.MiddleName,
-				"LastName":   user.LastName,
-				"Gender":     user.Gender,
-				"Age":        user.Age,
-				"Balance":    user.Balance,
-				"Username":   user.Username,
-				"Password":   "123",
+				"first_name":  user.FirstName,
+				"middle_name": user.MiddleName,
+				"last_name":   user.LastName,
+				"gender":      user.Gender,
+				"age":         user.Age,
+				"balance":     user.Balance,
+				"username":    user.Username,
+				"password":    "123",
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
@@ -280,6 +280,7 @@ func randomUser(t *testing.T) (user db.User, password string) {
 		HashedPassword: hashedPassword,
 		Username:       util.RandomString(6),
 	}
+
 	return
 }
 
@@ -287,16 +288,14 @@ func requireBodyMatchUser(t *testing.T, body *bytes.Buffer, user db.User) {
 	data, err := ioutil.ReadAll(body)
 	require.NoError(t, err)
 
-	var gotUser db.User
+	var gotUser userResponse
 	err = json.Unmarshal(data, &gotUser)
 	require.NoError(t, err)
 
-	require.Equal(t, user.Username, gotUser.Username)
-	require.Equal(t, user.FullName, gotUser.FullName)
+	require.Equal(t, user.LastName, gotUser.LastName)
 	require.Equal(t, user.MiddleName, gotUser.MiddleName)
 	require.Equal(t, user.Gender, gotUser.Gender)
 	require.Equal(t, user.Age, gotUser.Age)
 	require.Equal(t, user.Balance, gotUser.Balance)
 	require.Equal(t, user.Username, gotUser.Username)
-	require.Empty(t, gotUser.HashedPassword)
 }

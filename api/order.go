@@ -10,9 +10,23 @@ import (
 
 // these api endpoints are inspired by https://developers.shopware.com/developers-guide/rest-api/examples/order/
 type createOrderRequest struct {
-	UserUuid    int64 `json:"UserUuid" binding:"required"`
-	Quantity    int32 `json:"Quantity" binding:"required"`
-	ProductUuid int64 `json:"ProductUuid" binding:"required"`
+	UserUuid    int64 `json:"user_uuid" binding:"required"`
+	Quantity    int32 `json:"quantity" binding:"required"`
+	ProductUuid int64 `json:"product_uuid" binding:"required"`
+}
+
+type orderResponse struct {
+	Uuid     int64 `json:"order_uuid"`
+	UserUuid int64 `json:"user_uuid"`
+	Quantity int64 `json:"quantity"`
+}
+
+func newOrderResponse(order db.Order) orderResponse {
+	return orderResponse{
+		Uuid:     order.Uuid,
+		UserUuid: order.UserUuid,
+		Quantity: order.Quantity,
+	}
 }
 
 func (server *Server) createOrder(ctx *gin.Context) {
@@ -43,6 +57,30 @@ func (server *Server) createOrder(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, order)
+}
+
+type getOrderRequest struct {
+	Uuid int64 `uri:"id" binding:"required,min=1"`
+}
+
+func (server *Server) getOrder(ctx *gin.Context) {
+	var req getOrderRequest
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	order, err := server.store.GetOrder(ctx, req.Uuid)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	rsp := newOrderResponse(order)
+	ctx.JSON(http.StatusOK, rsp)
 }
 
 type deleteOrderRequest struct {
