@@ -239,7 +239,7 @@ type loginUserRequest struct {
 }
 
 type loginUserResponse struct {
-	AccessToken string       `json:"Username" binding:"required"`
+	AccessToken string       `json:"AccessToken" binding:"required"`
 	User        userResponse `json:"User" binding:"required"`
 }
 
