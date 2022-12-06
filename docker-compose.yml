@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=apple_store
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_SOURCE=postgresql://root:secret@postgres:5432/apple_store?sslmode=disable
+    depends_on:
+      - postgres
+    # use wait for to sync services >> in our case wait for db to be ready. More: https://github.com/eficode/wait-for
+    entrypoint:
+      ["/app/wait-for-db.sh", "postgres:5432", "--", "/app/start-db.sh"]
+    command: ["/app/main"]
