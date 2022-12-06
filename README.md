@@ -21,6 +21,12 @@ The service is a straightforward store. It will provide APIs for the frontend to
 - [Homebrew](https://brew.sh/)
 - [Migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate) for DB migrations
 
+TODOs:
+
+- Add more cases for api endpoints
+- Implement and improve READ/UPDATE orders
+- Implement the option for users to follow each other
+
 # Dev environment
 
 ## Run in docker
