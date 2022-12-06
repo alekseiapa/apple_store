@@ -6,6 +6,8 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=secret
       - POSTGRES_DB=apple_store
+    networks:
+      - app_net
   api:
     build:
       context: .
@@ -16,7 +18,13 @@ services:
       - DB_SOURCE=postgresql://root:secret@postgres:5432/apple_store?sslmode=disable
     depends_on:
       - postgres
+    networks:
+      - app_net
     # use wait for to sync services >> in our case wait for db to be ready. More: https://github.com/eficode/wait-for
     entrypoint:
       ["/app/wait-for-db.sh", "postgres:5432", "--", "/app/start-db.sh"]
     command: ["/app/main"]
+
+networks:
+  app_net:
+    external: true

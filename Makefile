@@ -28,13 +28,20 @@ test:
 server:
 	go run main.go
 
+docker_network:
+	docker network create app_net
+
+docker_compose:
+	docker-compose up --build
+
 mock:
 	mockgen --destination db/mock/store.go --package mockdb  github.com/alekseiapa/apple_store/db/sqlc Store
 
 
 
-.PHONY: database test api mock
+.PHONY: database test api mock docker
 
 # phony targets
 database : postgres createdb dropdb migrateup migratedown sqlc migrateup1ver migratedown1ver
 api: server
+docker: docker_compose docker_network
