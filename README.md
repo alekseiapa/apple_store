@@ -20,6 +20,7 @@ The service is a straightforward store. It will provide APIs for the frontend to
 - [Golang](https://golang.org/)
 - [Homebrew](https://brew.sh/)
 - [Migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate) for DB migrations
+- [Jq](https://stedolan.github.io/jq/download/) for JSON output representation
 
 TODOs:
 
