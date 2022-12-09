@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: apple-store-api
-          image: 210256638564.dkr.ecr.ap-southeast-1.amazonaws.com/apple_store:84cb9a67f2b68ac5893c0c73128f72f5380f47d2
+          image: 210256638564.dkr.ecr.ap-southeast-1.amazonaws.com/apple_store:latest
           ports:
             - containerPort: 8080
