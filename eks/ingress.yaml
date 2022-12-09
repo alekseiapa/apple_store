@@ -24,3 +24,7 @@ spec:
                 name: apple-store-api-service
                 port:
                   number: 80
+  tls:
+    - hosts:
+        - api.e-cart.publicvm.com
+      secretName: apple-store-api-cert
