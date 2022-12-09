@@ -17,5 +17,6 @@ spec:
       containers:
         - name: apple-store-api
           image: 210256638564.dkr.ecr.ap-southeast-1.amazonaws.com/apple_store:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
